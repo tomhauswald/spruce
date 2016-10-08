@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{355c5b9d-8827-408f-a94d-3721d37f92d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics\opengl">
+      <UniqueIdentifier>{1276c047-a469-43b2-aaa0-04e04a5c35e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{b241fc66-986b-4805-a9fc-f8933a92e6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\opengl">
+      <UniqueIdentifier>{66f16a8c-2190-4433-a362-6afc0efd07ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\misc">
+      <UniqueIdentifier>{f6750cd8-ddb0-46d0-a7c0-7c4336d2c2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\misc">
+      <UniqueIdentifier>{c31a5a43-42c6-433c-b28c-95e9badde4b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="spruce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_window.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_log.h">
+      <Filter>Header Files\misc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="spruce_opengl_window.cpp">
+      <Filter>Source Files\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_log.cpp">
+      <Filter>Source Files\misc</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
