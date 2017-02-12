@@ -1,10 +1,10 @@
 #pragma once
 
-#include "spruce.h"
+#include "spruce_graphics.h"
 
 namespace spruce {
 
-	struct window_settings {
+	struct OpenGL_Window_Settings {
 		std::string caption;
 		uint width;
 		uint height;
@@ -14,22 +14,22 @@ namespace spruce {
 		bool fullscreen;
 	};
 
-	struct opengl_settings {
+	struct OpenGL_Context_Settings {
 		uint majorVersion;
 		uint minorVersion;
 		bool coreProfileEnabled;
 		bool forwardCompatibilityEnabled;
 	};
 
-	class opengl_window {
+	class OpenGL_Window {
 	private:
 		GLFWwindow* window_;
-		window_settings settings_;
-		opengl_settings openglSettings_;
+		OpenGL_Window_Settings settings_;
+		OpenGL_Context_Settings openglSettings_;
 
 	public:
-		opengl_window(window_settings const& settings, opengl_settings const& openglSettings);
-		~opengl_window();
+		OpenGL_Window(OpenGL_Window_Settings const& settings, OpenGL_Context_Settings const& openglSettings);
+		~OpenGL_Window();
 
 		inline auto const& settings() const { return settings_; }
 

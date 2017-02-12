@@ -2,11 +2,16 @@
 #include "spruce_log.h"
 
 namespace spruce {
-	opengl_window::opengl_window(window_settings const& settings, opengl_settings const& openglSettings)
+	OpenGL_Window::OpenGL_Window(OpenGL_Window_Settings const& settings, OpenGL_Context_Settings const& openglSettings)
 		: settings_(settings), openglSettings_(openglSettings) {
 
-		panic_if(glfwInit() == GLFW_FALSE, "Failed to initialize GLFW.");
-		panic_if(glewInit() == GL_FALSE, "Failed to initialize GLEW.");
+		auto glfwInitResult = glfwInit();
+		if (glfwInitResult == GLFW_FALSE) {
+			panic("Failed to initialize GLFW.");
+		}
+		else {
+			Log::msg.printf(mprintf("Initialized GLFW (Version: %s).\n", glfwGetVersionString()));
+		}
 
 		int monitorCount;
 		auto monitors = glfwGetMonitors(&monitorCount);
@@ -22,8 +27,8 @@ namespace spruce {
 		// Core profile only allowed for OpenGL >= 3.2.
 		if (openglSettings.majorVersion < 3 || (openglSettings.majorVersion == 3 && openglSettings.minorVersion < 2)) {
 			if (openglSettings.coreProfileEnabled) {
-				log::msg << "OpenGL core profile not supported with OpenGL version " << openglSettings.majorVersion << "." << openglSettings.minorVersion << "." << newl;
-				log::msg << "Falling back to compatibility profile." << newl;
+				Log::msg << "OpenGL core profile not supported with OpenGL version " << openglSettings.majorVersion << "." << openglSettings.minorVersion << ".\n";
+				Log::msg << "Falling back to compatibility profile.\n";
 			}
 
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
@@ -35,7 +40,7 @@ namespace spruce {
 		// Forward compatibility only allowed for OpenGL >= 3.0.
 		if (openglSettings.majorVersion < 3) {
 			if (openglSettings.forwardCompatibilityEnabled) {
-				log::msg << "Forward compatibility not supported with OpenGL version " << openglSettings.majorVersion << "." << openglSettings.minorVersion << "." << newl;
+				Log::msg << "Forward compatibility not supported with OpenGL version " << openglSettings.majorVersion << "." << openglSettings.minorVersion << ".\n";
 			}
 
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_FALSE);
@@ -47,6 +52,11 @@ namespace spruce {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, openglSettings.majorVersion);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, openglSettings.minorVersion);
 
+#ifdef DEBUG
+		// Enable context debug flag.
+		glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+#endif
+
 		window_ = glfwCreateWindow(
 			settings.width, 
 			settings.height,
@@ -55,23 +65,43 @@ namespace spruce {
 			nullptr
 		);
 
-		panic_if(window_ == nullptr, "Failed to create GLFW window.");
+		if (window_ == nullptr) {
+			panic("Failed to create GLFW window.");
+		}
+		else {
+			Log::msg.printf("Created GLFW window of size %dx%d.\n", settings.width, settings.height);
+			glfwMakeContextCurrent(window_);
+			Log::msg.printf("OpenGL context version: %s\n", glGetString(GL_VERSION));
+		}
+
+		
+
+		// Initialize GLEW.
+		glewExperimental = GL_TRUE;
+		auto glewInitResult = glewInit();
+		if (glewInitResult != GLEW_OK) {
+			glfwTerminate();
+			panic(mprintf("Failed to initialize GLEW.\nReason: %s.\n", glewGetErrorString(glewInitResult)));
+		}
+		else {
+			Log::msg.printf("Initialized GLEW (Version: %s).\n", glewGetString(GLEW_VERSION));
+		}
 	}
 
-	opengl_window::~opengl_window() {
+	OpenGL_Window::~OpenGL_Window() {
 		glfwDestroyWindow(window_);
 		glfwTerminate();
 	}
 
-	bool opengl_window::should_close() const {
+	bool OpenGL_Window::should_close() const {
 		return glfwWindowShouldClose(window_);
 	}
 
-	void opengl_window::swap_buffers() {
+	void OpenGL_Window::swap_buffers() {
 		glfwSwapBuffers(window_);
 	}
 
-	void opengl_window::poll_events() {
+	void OpenGL_Window::poll_events() {
 		glfwPollEvents();
 	}
 }

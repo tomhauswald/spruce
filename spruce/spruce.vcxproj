@@ -89,12 +89,21 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="spruce_common.h" />
+    <ClInclude Include="spruce_graphics.h" />
     <ClInclude Include="spruce_log.h" />
-    <ClInclude Include="spruce.h" />
+    <ClInclude Include="spruce_opengl_array_buffer.h" />
+    <ClInclude Include="spruce_opengl_buffer.h" />
+    <ClInclude Include="spruce_opengl_element_buffer.h" />
+    <ClInclude Include="spruce_opengl_item.h" />
+    <ClInclude Include="spruce_opengl_program.h" />
+    <ClInclude Include="spruce_opengl_shader.h" />
+    <ClInclude Include="spruce_opengl_texture.h" />
+    <ClInclude Include="spruce_opengl_vertex_array.h" />
     <ClInclude Include="spruce_opengl_window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="spruce.cpp" />
+    <ClCompile Include="spruce_common.cpp" />
     <ClCompile Include="spruce_log.cpp" />
     <ClCompile Include="spruce_opengl_window.cpp" />
   </ItemGroup>

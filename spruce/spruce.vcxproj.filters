@@ -33,25 +33,52 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="spruce.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="spruce_opengl_window.h">
       <Filter>Header Files\graphics\opengl</Filter>
     </ClInclude>
     <ClInclude Include="spruce_log.h">
       <Filter>Header Files\misc</Filter>
     </ClInclude>
+    <ClInclude Include="spruce_opengl_texture.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_graphics.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_item.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_vertex_array.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_buffer.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_array_buffer.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_element_buffer.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_program.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_shader.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_opengl_window.cpp">
       <Filter>Source Files\graphics\opengl</Filter>
     </ClCompile>
-    <ClCompile Include="spruce.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="spruce_log.cpp">
       <Filter>Source Files\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_common.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

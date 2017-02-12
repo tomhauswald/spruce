@@ -2,10 +2,10 @@
 
 namespace spruce {
 
-	log log::msg;
-	log log::err;
+	Log Log::msg;
+	Log Log::err;
 
-	void log::register_callback(std::function<void(std::string const&)> callback) {
+	void Log::register_callback(std::function<void(std::string const&)> callback) {
 		callbacks_.push_back(callback);
 	}
 }
