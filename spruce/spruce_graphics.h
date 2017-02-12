@@ -30,7 +30,6 @@ namespace spruce {
 	static inline GLuint glGenTexture()      { return glGenSingle(glGenTextures); }
 	static inline GLuint glGenBuffer()       { return glGenSingle(glGenBuffers); }
 	static inline GLuint glGenFramebuffer()  { return glGenSingle(glGenFramebuffers); }
-	static inline GLuint glGenProgram()      { return glGenSingle(glGenProgramsARB); }
 	static inline GLuint glGenVertexArray()  { return glGenSingle(glGenVertexArrays); }
 
 	static inline void glDeleteTexture(GLuint id)     { glDeleteSingle(glDeleteTextures, id); }

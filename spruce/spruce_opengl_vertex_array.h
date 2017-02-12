@@ -15,7 +15,6 @@ namespace spruce {
 
 		inline void enable_attribute(GLuint slot) {
 			glEnableVertexAttribArray(slot);
-			glEnableVertexArrayAttrib(id_, slot);
 		}
 
 		/*

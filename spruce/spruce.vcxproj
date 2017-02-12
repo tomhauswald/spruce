@@ -89,6 +89,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="spruce_mesh.h" />
     <ClInclude Include="spruce_common.h" />
     <ClInclude Include="spruce_graphics.h" />
     <ClInclude Include="spruce_log.h" />
