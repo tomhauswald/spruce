@@ -36,4 +36,9 @@ namespace spruce {
 	static inline void glDeleteBuffer(GLuint id)      { glDeleteSingle(glDeleteBuffers, id); }
 	static inline void glDeleteFramebuffer(GLuint id) { glDeleteSingle(glDeleteFramebuffers, id); }
 	static inline void glDeleteVertexArray(GLuint id) { glDeleteSingle(glDeleteVertexArrays, id); }
+	static inline void glBindArrayBuffer(GLuint id)   { glBindBuffer(GL_ARRAY_BUFFER, id); }
+	static inline void glBindElementBuffer(GLuint id) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id); }
+	static inline void glUnbindArrayBuffer()          { glBindArrayBuffer(0); }
+	static inline void glUnbindElementBuffer()        { glBindElementBuffer(0); }
+	static inline void glUnbindVertexArray()          { glBindVertexArray(0); }
 }

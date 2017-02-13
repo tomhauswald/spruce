@@ -10,6 +10,28 @@
 
 using namespace spruce;
 
+struct Simple_Vertex {
+	fvec3 position;
+	fvec3 normal;
+	fvec3 color;
+	fvec2 uv;
+};
+
+class Simple_Mesh : public Mesh<Simple_Vertex> {
+public:
+	virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
+		vao.enable_attribute(0);
+		vao.enable_attribute(1);
+		vao.enable_attribute(2);
+		vao.enable_attribute(3);
+
+		vao.store_fvec3_attribute(0, sizeof(Simple_Vertex), 0 * sizeof(fvec3));
+		vao.store_fvec3_attribute(1, sizeof(Simple_Vertex), 1 * sizeof(fvec3));
+		vao.store_fvec3_attribute(2, sizeof(Simple_Vertex), 2 * sizeof(fvec3));
+		vao.store_fvec2_attribute(3, sizeof(Simple_Vertex), 3 * sizeof(fvec3));
+	}
+};
+
 int main() {
 	Log::msg.register_callback([](std::string const& message) { std::cout << message; });
 	Log::err.register_callback([](std::string const& message) { std::cerr << message; });
@@ -22,7 +44,7 @@ int main() {
 	ws.fullscreen = false;
 	ws.maximized = false;
 	ws.resizable = false;
-	
+
 	OpenGL_Context_Settings cs;
 	cs.majorVersion = 4;
 	cs.minorVersion = 5;
@@ -42,33 +64,46 @@ int main() {
 	program.attach_shader(fs);
 	program.link();
 
-	Mesh mesh;
-	
-	mesh.set_positions({
-		{ -1.0f,  1.0f, 0.0f },
-		{ -1.0f, -1.0f, 0.0f },
-		{  1.0f, -1.0f, 0.0f },
-		{  1.0f,  1.0f, 0.0f } 
+	Simple_Mesh mesh;
+	mesh.initialize();
+
+	auto& vertices = mesh.vertices();
+
+	vertices.push_back({
+		{ -1.0f,  1.0f,  0.0f },
+		{  0.0f,  0.0f,  0.0f },
+		{  1.0f,  0.0f,  0.0f },
+		{  0.0f,  0.0f }
 	});
 
-	mesh.set_colors({
-		{ 1, 0, 0 },
-		{ 0, 1, 0 },
-		{ 0, 0, 1 },
-		{ 1, 1, 1 }
+	vertices.push_back({
+		{ -1.0f, -1.0f,  0.0f },
+		{  0.0f,  0.0f,  0.0f },
+		{  0.0f,  1.0f,  0.0f },
+		{  1.0f,  0.0f }
 	});
 
-	mesh.set_uvs({
-		{ 0, 0 },
-		{ 1, 0 },
-		{ 1, 1 },
-		{ 0, 1 }
+	vertices.push_back({
+		{ 1.0f, -1.0f,  0.0f },
+		{ 0.0f,  0.0f,  0.0f },
+		{ 0.0f,  0.0f,  1.0f },
+		{ 1.0f,  1.0f }
 	});
 
-	mesh.set_indices({
+	vertices.push_back({
+		{ 1.0f,  1.0f,  0.0f },
+		{ 0.0f,  0.0f,  0.0f },
+		{ 1.0f,  1.0f,  1.0f },
+		{ 0.0f,  1.0f }
+	});
+
+	auto& indices = mesh.indices();
+	indices.insert(indices.end(), {
 		0, 1, 2,
 		2, 3, 0
 	});
+
+	mesh.update();
 
 	while (!window.should_close()) {
 		window.poll_events();

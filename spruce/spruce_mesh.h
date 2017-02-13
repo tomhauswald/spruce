@@ -5,68 +5,79 @@
 #include "spruce_opengl_element_buffer.h"
 
 namespace spruce {
+
+	template<class VertexFormat>
 	class Mesh {
 	private:
-		OpenGL_Vertex_Array vao_;
-		
-		OpenGL_Array_Buffer position_vbo_;
-		OpenGL_Array_Buffer color_vbo_;
-		OpenGL_Array_Buffer uv_vbo_;
+		// Vertices.
+		std::vector<VertexFormat> vertices_;
+		OpenGL_Array_Buffer vbo_;
 
+		// Indices.
+		std::vector<uint16_t> indices_;
 		OpenGL_Element_Buffer ibo_;
-		size_t index_count_;
+
+		// Vertex array.
+		OpenGL_Vertex_Array vao_;
+
+        #ifdef _DEBUG
+		  // Initialization flag.
+		  bool initialized_ = false;
+        #endif
+
+	protected:
+		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) = 0;
 
 	public:
-		Mesh() 
-		: position_vbo_(OpenGL_Buffer_Usage::Static_Draw),
-		  color_vbo_(OpenGL_Buffer_Usage::Static_Draw),
-		  uv_vbo_(OpenGL_Buffer_Usage::Static_Draw),
-		  ibo_(OpenGL_Buffer_Usage::Static_Draw),
-		  index_count_(0) {
+		Mesh()
+			: vbo_(OpenGL_Buffer_Usage::Static_Draw),
+			ibo_(OpenGL_Buffer_Usage::Static_Draw) {}
 
+		void initialize() {
 			vao_.bind();
-			
-			vao_.enable_attribute(0);
-			position_vbo_.bind();
-			vao_.store_fvec3_attribute(0);
-
-			vao_.enable_attribute(1);
-			color_vbo_.bind();
-			vao_.store_fvec3_attribute(1);
-
-			vao_.enable_attribute(2);
-			uv_vbo_.bind();
-			vao_.store_fvec2_attribute(2);
-
+			vbo_.bind();
 			ibo_.bind();
+			initialize_vertex_array(vao_);
+			glUnbindVertexArray();
+			glUnbindArrayBuffer();
+			glUnbindElementBuffer();
 
-			glBindVertexArray(0);
+			#ifdef _DEBUG
+			  initialized_ = true;
+			#endif
 		}
 
-		void set_indices(std::vector<uint16_t> const& indices) {
-			ibo_.bind();
-			ibo_.buffer(indices.size() * sizeof(uint16_t), &indices[0]);
-			index_count_ = indices.size();
-		}
+		inline std::vector<VertexFormat>& vertices() { return vertices_; }
+		inline std::vector<VertexFormat> const& vertices() const { return vertices_; }
 
-		void set_positions(std::vector<fvec3> const& positions) {
-			position_vbo_.bind();
-			position_vbo_.buffer(positions.size() * sizeof(fvec3), &positions[0]);
-		}
-
-		void set_colors(std::vector<fvec3> const& colors) {
-			color_vbo_.bind();
-			color_vbo_.buffer(colors.size() * sizeof(fvec3), &colors[0]);
-		}
-
-		void set_uvs(std::vector<fvec2> const& uvs) {
-			uv_vbo_.bind();
-			uv_vbo_.buffer(uvs.size() * sizeof(fvec3), &uvs[0]);
-		}
+		inline std::vector<uint16_t>& indices() { return indices_; }
+		inline std::vector<uint16_t> const& indices() const { return indices_; }
 
 		void draw() {
+
+			#ifdef _DEBUG
+			  panic_if(!initialized_, "Trying to draw uninitialized mesh.");
+			#endif
+
 			vao_.bind();
-			glDrawElements(GL_TRIANGLES, index_count_, GL_UNSIGNED_SHORT, nullptr);
+			glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+			glUnbindVertexArray();
+		}
+
+		// Upload updated vertex and index data to GPU.
+		void update() {
+
+			#ifdef _DEBUG
+			  panic_if(!initialized_, "Trying to update uninitialized mesh.");
+			#endif
+
+			vbo_.bind();
+			vbo_.buffer(vertices_.size() * sizeof(VertexFormat), &vertices_[0]);
+			glUnbindArrayBuffer();
+
+			ibo_.bind();
+			ibo_.buffer(indices_.size() * sizeof(uint16_t), &indices_[0]);
+			glUnbindElementBuffer();
 		}
 	};
 }
