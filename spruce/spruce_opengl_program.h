@@ -42,6 +42,8 @@ namespace spruce {
 			}
 		}
 
+		inline void use() { glUseProgram(id_); }
+
 		inline std::string const& name() const { return name_; }
 
 		~OpenGL_Program() {

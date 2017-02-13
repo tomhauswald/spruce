@@ -111,7 +111,7 @@ int main() {
 		glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(program.id());
+		program.use();
 		mesh.draw();
 
 		window.swap_buffers();
