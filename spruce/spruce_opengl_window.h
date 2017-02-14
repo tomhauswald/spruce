@@ -26,6 +26,12 @@ namespace spruce {
 		GLFWwindow* window_;
 		OpenGL_Window_Settings settings_;
 		OpenGL_Context_Settings openglSettings_;
+		
+		static std::string glfwErrorMsg_;
+
+		static inline void glfw_error_callback(int code, char const* desc) {
+			glfwErrorMsg_ = std::string { desc };
+		}
 
 	public:
 		OpenGL_Window(OpenGL_Window_Settings const& settings, OpenGL_Context_Settings const& openglSettings);

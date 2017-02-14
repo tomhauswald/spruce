@@ -2,6 +2,8 @@
 #include "spruce_log.h"
 
 namespace spruce {
+	std::string OpenGL_Window::glfwErrorMsg_;
+
 	OpenGL_Window::OpenGL_Window(OpenGL_Window_Settings const& settings, OpenGL_Context_Settings const& openglSettings)
 		: settings_(settings), openglSettings_(openglSettings) {
 
@@ -11,6 +13,7 @@ namespace spruce {
 		}
 		else {
 			Log::msg.printf(mprintf("Initialized GLFW (Version: %s).\n", glfwGetVersionString()));
+			glfwSetErrorCallback(&OpenGL_Window::glfw_error_callback);
 		}
 
 		int monitorCount;
@@ -52,9 +55,9 @@ namespace spruce {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, openglSettings.majorVersion);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, openglSettings.minorVersion);
 
-#ifdef DEBUG
+#ifdef _DEBUG
 		// Enable context debug flag.
-		glfwOpenWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 
 		window_ = glfwCreateWindow(
@@ -66,15 +69,13 @@ namespace spruce {
 		);
 
 		if (window_ == nullptr) {
-			panic("Failed to create GLFW window.");
+			panic(mprintf("Failed to create GLFW window.\nReason: %s.\n", OpenGL_Window::glfwErrorMsg_.c_str()));
 		}
 		else {
 			Log::msg.printf("Created GLFW window of size %dx%d.\n", settings.width, settings.height);
 			glfwMakeContextCurrent(window_);
 			Log::msg.printf("OpenGL context version: %s\n", glGetString(GL_VERSION));
 		}
-
-		
 
 		// Initialize GLEW.
 		glewExperimental = GL_TRUE;
