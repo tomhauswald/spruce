@@ -31,7 +31,8 @@ namespace spruce {
 	public:
 		Mesh()
 			: vbo_(OpenGL_Buffer_Usage::Static_Draw),
-			ibo_(OpenGL_Buffer_Usage::Static_Draw) {}
+			  ibo_(OpenGL_Buffer_Usage::Static_Draw) {
+		}
 
 		void initialize() {
 			vao_.bind();

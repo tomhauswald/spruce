@@ -47,7 +47,7 @@ int main() {
 
 	OpenGL_Context_Settings cs;
 	cs.majorVersion = 4;
-	cs.minorVersion = 5;
+	cs.minorVersion = 0;
 	cs.coreProfileEnabled = true;
 	cs.forwardCompatibilityEnabled = true;
 

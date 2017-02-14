@@ -74,16 +74,20 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\Libraries\glm-0.9.8.4;..\spruce;E:\Libraries\glfw-3.2.1\include;E:\Libraries\glew-2.0.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\x64\Debug;E:\Libraries\glfw-3.2.1\lib\Release\x64;E:\Libraries\glew-2.0.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\spruce;..\deps\glew-2.0.0\include;..\deps\glfw-3.2.1\include;..\deps\glm-0.9.8.4;$(IncludePath)</IncludePath>
+    <LibraryPath>..\spruce\x64\Debug;..\deps\glew-2.0.0\lib;..\deps\glfw-3.2.1\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\Libraries\glm-0.9.8.1;E:\Dev\cpp\spruce\spruce;E:\Libraries\glfw-3.2.1\include;E:\Libraries\glew-2.0.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Dev\cpp\spruce\x64\Debug;E:\Libraries\glfw-3.2.1\lib\Release\x64;E:\Libraries\glew-2.0.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\spruce;..\deps\glew-2.0.0\include;..\deps\glfw-3.2.1\include;..\deps\glm-0.9.8.4;$(IncludePath)</IncludePath>
+    <LibraryPath>..\spruce\x64\Debug;..\deps\glew-2.0.0\lib;..\deps\glfw-3.2.1\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
