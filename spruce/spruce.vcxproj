@@ -104,6 +104,7 @@
     <ClInclude Include="spruce_opengl_program.h" />
     <ClInclude Include="spruce_opengl_shader.h" />
     <ClInclude Include="spruce_opengl_texture.h" />
+    <ClInclude Include="spruce_opengl_uniform.h" />
     <ClInclude Include="spruce_opengl_vertex_array.h" />
     <ClInclude Include="spruce_opengl_window.h" />
   </ItemGroup>

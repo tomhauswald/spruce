@@ -72,6 +72,9 @@
     <ClInclude Include="spruce_mesh.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="spruce_opengl_uniform.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_opengl_window.cpp">

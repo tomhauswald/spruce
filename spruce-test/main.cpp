@@ -32,6 +32,17 @@ public:
 	}
 };
 
+std::string to_string(fmat4x4 const& m) {
+	std::string result;
+	for (auto i = 0; i < 4; ++i) {
+		for (auto j = 0; j < 4; ++j) {
+			result += std::to_string(m[i][j]) + " ";
+		}
+		result += "\n";
+	}
+	return result;
+}
+
 int main() {
 	Log::msg.register_callback([](std::string const& message) { std::cout << message; });
 	Log::err.register_callback([](std::string const& message) { std::cerr << message; });
@@ -63,6 +74,8 @@ int main() {
 	program.attach_shader(vs);
 	program.attach_shader(fs);
 	program.link();
+
+	program.add_uniform("uWorldViewProjection").store(fmat4x4 { 1.0f });
 
 	Simple_Mesh mesh;
 	mesh.initialize();
