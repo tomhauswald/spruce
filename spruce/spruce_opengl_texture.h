@@ -1,17 +1,25 @@
 #pragma once
 
 #include "spruce_opengl_item.h"
+#include "spruce_bitmap.h"
 
 namespace spruce {
+
+	enum class OpenGL_Sampling_Mode {
+		Point,
+		Lerp
+	};
+
 	class OpenGL_Texture : public OpenGL_Item {
 	public:
-		OpenGL_Texture()
-			: OpenGL_Item(OpenGL_Item_Type::Texture, glGenTexture()) {
-			panic_if(id_ == 0, "Failed to generate OpenGL texture.");
-		}
+		// Generates a new OpenGL texture using default settings.
+		OpenGL_Texture();
 
-		~OpenGL_Texture() {
-			glDeleteTexture(id_);
-		}
+		void upload_bitmap_data(Bitmap const& bmp);
+		void set_downsampling_mode(OpenGL_Sampling_Mode localMode, bool useMipmaps, OpenGL_Sampling_Mode mipmapMode);
+		void set_upsampling_mode(OpenGL_Sampling_Mode localMode);
+		void set_max_anisotropy(float max);
+
+		~OpenGL_Texture();
 	};
 }

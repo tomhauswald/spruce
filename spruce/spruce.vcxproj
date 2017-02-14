@@ -55,13 +55,13 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\deps\glew-2.0.0\include;..\deps\glfw-3.2.1\include;..\deps\glm-0.9.8.4;$(IncludePath)</IncludePath>
+    <IncludePath>..\deps\glew-2.0.0\include;..\deps\glfw-3.2.1\include;..\deps\glm-0.9.8.4;..\deps\stb_image;$(IncludePath)</IncludePath>
     <LibraryPath>..\deps\glfw-3.2.1\lib;..\deps\glew-2.0.0\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\deps\glew-2.0.0\include;..\deps\glfw-3.2.1\include;..\deps\glm-0.9.8.4;$(IncludePath)</IncludePath>
+    <IncludePath>..\deps\glew-2.0.0\include;..\deps\glfw-3.2.1\include;..\deps\glm-0.9.8.4;..\deps\stb_image;$(IncludePath)</IncludePath>
     <LibraryPath>..\deps\glfw-3.2.1\lib;..\deps\glew-2.0.0\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
@@ -93,6 +93,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="spruce_bitmap.h" />
     <ClInclude Include="spruce_mesh.h" />
     <ClInclude Include="spruce_common.h" />
     <ClInclude Include="spruce_graphics.h" />
@@ -109,8 +110,10 @@
     <ClInclude Include="spruce_opengl_window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="spruce_bitmap.cpp" />
     <ClCompile Include="spruce_common.cpp" />
     <ClCompile Include="spruce_log.cpp" />
+    <ClCompile Include="spruce_opengl_texture.cpp" />
     <ClCompile Include="spruce_opengl_window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

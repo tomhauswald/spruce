@@ -75,6 +75,9 @@
     <ClInclude Include="spruce_opengl_uniform.h">
       <Filter>Header Files\graphics\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="spruce_bitmap.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_opengl_window.cpp">
@@ -85,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="spruce_common.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_bitmap.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_opengl_texture.cpp">
+      <Filter>Source Files\graphics\opengl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

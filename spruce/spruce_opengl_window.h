@@ -42,5 +42,6 @@ namespace spruce {
 		bool should_close() const;
 		void swap_buffers();
 		void poll_events();
+		void clear_buffer(fvec3 const& color);
 	};
 }

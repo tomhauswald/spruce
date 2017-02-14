@@ -7,6 +7,11 @@
 #include <spruce_opengl_shader.h>
 #include <spruce_opengl_program.h>
 #include <spruce_mesh.h>
+#include <spruce_bitmap.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 using namespace spruce;
 
@@ -32,20 +37,14 @@ public:
 	}
 };
 
-std::string to_string(fmat4x4 const& m) {
-	std::string result;
-	for (auto i = 0; i < 4; ++i) {
-		for (auto j = 0; j < 4; ++j) {
-			result += std::to_string(m[i][j]) + " ";
-		}
-		result += "\n";
-	}
-	return result;
-}
-
 int main() {
 	Log::msg.register_callback([](std::string const& message) { std::cout << message; });
 	Log::err.register_callback([](std::string const& message) { std::cerr << message; });
+
+#ifdef _WIN32
+	// Enable message box debugging on Windows platforms.
+	Log::err.register_callback([](std::string const& message) { MessageBoxA(nullptr, message.c_str(), "Error", 0); });
+#endif
 
 	OpenGL_Window_Settings ws;
 	ws.caption = "Spruce Engine Test Application";
@@ -74,8 +73,8 @@ int main() {
 	program.attach_shader(vs);
 	program.attach_shader(fs);
 	program.link();
-
 	program.add_uniform("uWorldViewProjection").store(fmat4x4 { 1.0f });
+	program.add_uniform("uTexture").store(0);
 
 	Simple_Mesh mesh;
 	mesh.initialize();
@@ -86,28 +85,28 @@ int main() {
 		{ -1.0f,  1.0f,  0.0f },
 		{  0.0f,  0.0f,  0.0f },
 		{  1.0f,  0.0f,  0.0f },
-		{  0.0f,  0.0f }
+		{  0.0f,  1.0f }
 	});
 
 	vertices.push_back({
 		{ -1.0f, -1.0f,  0.0f },
 		{  0.0f,  0.0f,  0.0f },
 		{  0.0f,  1.0f,  0.0f },
-		{  1.0f,  0.0f }
+		{  0.0f,  0.0f }
 	});
 
 	vertices.push_back({
 		{ 1.0f, -1.0f,  0.0f },
 		{ 0.0f,  0.0f,  0.0f },
 		{ 0.0f,  0.0f,  1.0f },
-		{ 1.0f,  1.0f }
+		{ 1.0f,  0.0f }
 	});
 
 	vertices.push_back({
 		{ 1.0f,  1.0f,  0.0f },
 		{ 0.0f,  0.0f,  0.0f },
 		{ 1.0f,  1.0f,  1.0f },
-		{ 0.0f,  1.0f }
+		{ 1.0f,  1.0f }
 	});
 
 	auto& indices = mesh.indices();
@@ -118,13 +117,18 @@ int main() {
 
 	mesh.update();
 
+	Bitmap bitmap { "crate.jpg" };
+	OpenGL_Texture texture;
+	texture.upload_bitmap_data(bitmap);
+
 	while (!window.should_close()) {
 		window.poll_events();
-
-		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		window.clear_buffer({ 0.0f, 0.0f, 0.0f });
 
 		program.use();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture.id());
+		
 		mesh.draw();
 
 		window.swap_buffers();

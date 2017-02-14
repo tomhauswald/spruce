@@ -7,8 +7,11 @@ layout(location = 3) in vec2 uv;
 
 out vec3 pass_color;
 
+uniform mat4x4    uWorldViewProjection;
+uniform sampler2D uTexture;
+
 void main() {
-  gl_Position.xyz = position;
-  gl_Position.w = 1.0;
-  pass_color = color;
+  gl_Position   = uWorldViewProjection * vec4(position, 1.0f);
+  gl_Position.w = 1.0f;
+  pass_color    = texture(uTexture, uv).rgb;
 }

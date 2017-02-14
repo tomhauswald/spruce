@@ -105,4 +105,9 @@ namespace spruce {
 	void OpenGL_Window::poll_events() {
 		glfwPollEvents();
 	}
+
+	void OpenGL_Window::clear_buffer(fvec3 const& color) {
+		glClearColor(color.r, color.g, color.b, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 }
