@@ -6,7 +6,7 @@ namespace spruce {
 	enum class OpenGL_Item_Type {
 		Texture,
 		Buffer,
-		Framebuffer,
+		Frame_Buffer,
 		Shader,
 		Program,
 		Vertex_Array

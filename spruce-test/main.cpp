@@ -8,6 +8,8 @@
 #include <spruce_opengl_program.h>
 #include <spruce_mesh.h>
 #include <spruce_bitmap.h>
+#include <spruce_opengl_frame_buffer.h>
+#include <spruce_game.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -15,25 +17,110 @@
 
 using namespace spruce;
 
-struct Simple_Vertex {
-	fvec3 position;
-	fvec3 normal;
-	fvec3 color;
-	fvec2 uv;
+class Test_Scene : public Game_Object {
+private:
+	std::unique_ptr<OpenGL_Texture> grass_texture_;
+	std::unique_ptr<Textured_Mesh> mesh_;
+	OpenGL_Program* program_;
+
+public:
+	Test_Scene(Game* game, Game_Object* parent, OpenGL_Program* program)
+		: Game_Object(game, parent),
+		  program_(program) {
+
+		// Construct test mesh.
+		mesh_ = std::make_unique<Textured_Mesh>();
+		mesh_->initialize();
+		auto& vertices = mesh_->vertices();
+		vertices.push_back({
+			{ -1.0f,  1.0f,  0.0f },
+			{ 0.0f,  0.0f,  0.0f },
+			{ 1.0f,  1.0f,  1.0f },
+			{ 0.0f,  1.0f }
+		});
+		vertices.push_back({
+			{ -1.0f, -1.0f,  0.0f },
+			{ 0.0f,  0.0f,  0.0f },
+			{ 1.0f,  1.0f,  1.0f },
+			{ 0.0f,  0.0f }
+		});
+		vertices.push_back({
+			{ 1.0f, -1.0f,  0.0f },
+			{ 0.0f,  0.0f,  0.0f },
+			{ 1.0f,  1.0f,  1.0f },
+			{ 1.0f,  0.0f }
+		});
+		vertices.push_back({
+			{ 1.0f,  1.0f,  0.0f },
+			{ 0.0f,  0.0f,  0.0f },
+			{ 1.0f,  1.0f,  1.0f },
+			{ 1.0f,  1.0f }
+		});
+		auto& indices = mesh_->indices();
+		indices.insert(indices.end(), {
+			0, 1, 2,
+			2, 3, 0
+		});
+		mesh_->update();
+
+		// Load texture.
+		grass_texture_ = std::make_unique<OpenGL_Texture>();
+		grass_texture_->set_upsampling_mode(OpenGL_Sampling_Mode::Point);
+		grass_texture_->set_downsampling_mode(OpenGL_Sampling_Mode::Point, false, OpenGL_Sampling_Mode::Point);
+		grass_texture_->set_max_anisotropy(1.0f);
+		grass_texture_->upload_bitmap_data(Bitmap { "grass.png" });
+	}
+
+	virtual void draw() {
+		program_->use();
+		program_->uniform("uTexture")->store(0);
+		grass_texture_->bind(0);
+
+		fmat4x4 world_view_projection;
+		world_view_projection = glm::translate(world_view_projection, { 0.0f, -0.75f, 0.0f });
+		world_view_projection = glm::scale(world_view_projection, { 1.0f / game_->window().aspect_ratio(), 1.0f, 1.0f });
+		world_view_projection = glm::rotate(world_view_projection, pi<float>() / 4.0f, { 0.0f, 0.0f, 1.0f });
+		program_->uniform("uWorldViewProjection")->store(world_view_projection);
+
+		mesh_->draw();
+	}
 };
 
-class Simple_Mesh : public Mesh<Simple_Vertex> {
-public:
-	virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
-		vao.enable_attribute(0);
-		vao.enable_attribute(1);
-		vao.enable_attribute(2);
-		vao.enable_attribute(3);
+class Test_Game : public Game {
+private:
+	std::unique_ptr<OpenGL_Program> textured_program_;
 
-		vao.store_fvec3_attribute(0, sizeof(Simple_Vertex), 0 * sizeof(fvec3));
-		vao.store_fvec3_attribute(1, sizeof(Simple_Vertex), 1 * sizeof(fvec3));
-		vao.store_fvec3_attribute(2, sizeof(Simple_Vertex), 2 * sizeof(fvec3));
-		vao.store_fvec2_attribute(3, sizeof(Simple_Vertex), 3 * sizeof(fvec3));
+public:
+	Test_Game(OpenGL_Window_Settings const& window_settings,
+			  OpenGL_Context_Settings const& context_settings)
+		: Game(window_settings, context_settings) {
+	}
+
+	virtual bool initialize() {
+		// Load the shader program used to render geometry to the G-buffer.
+		textured_program_ = std::make_unique<OpenGL_Program>("textured");
+		{
+			OpenGL_Shader vs { OpenGL_Shader_Type::Vertex };
+			vs.compile_from_source("textured.vert");
+
+			OpenGL_Shader fs { OpenGL_Shader_Type::Fragment };
+			fs.compile_from_source("textured.frag");
+
+			textured_program_->attach_shader(vs);
+			textured_program_->attach_shader(fs);
+			textured_program_->link();
+			textured_program_->add_uniform("uWorldViewProjection");
+			textured_program_->add_uniform("uTexture");
+		}
+
+		scene_root_->add_child(
+			std::make_unique<Test_Scene>(
+			    this,
+			    scene_root_.get(),
+			    textured_program_.get()
+		    )
+		);
+		return true;
 	}
 };
 
@@ -61,85 +148,5 @@ int main() {
 	cs.coreProfileEnabled = true;
 	cs.forwardCompatibilityEnabled = true;
 
-	OpenGL_Window window { ws, cs };
-
-	OpenGL_Shader vs { OpenGL_Shader_Type::Vertex };
-	vs.compile_from_source("basic.vert");
-
-	OpenGL_Shader fs { OpenGL_Shader_Type::Fragment };
-	fs.compile_from_source("basic.frag");
-
-	OpenGL_Program program { "basic" };
-	program.attach_shader(vs);
-	program.attach_shader(fs);
-	program.link();
-	program.add_uniform("uWorldViewProjection").store(fmat4x4 { 1.0f });
-	program.add_uniform("uTexture").store(0);
-
-	Simple_Mesh mesh;
-	mesh.initialize();
-
-	auto& vertices = mesh.vertices();
-
-	vertices.push_back({
-		{ -1.0f,  1.0f,  0.0f },
-		{  0.0f,  0.0f,  0.0f },
-		{  1.0f,  1.0f,  1.0f },
-		{  0.0f,  1.0f }
-	});
-
-	vertices.push_back({
-		{ -1.0f, -1.0f,  0.0f },
-		{  0.0f,  0.0f,  0.0f },
-		{  1.0f,  1.0f,  1.0f },
-		{  0.0f,  0.0f }
-	});
-
-	vertices.push_back({
-		{ 1.0f, -1.0f,  0.0f },
-		{ 0.0f,  0.0f,  0.0f },
-		{ 1.0f,  1.0f,  1.0f },
-		{ 1.0f,  0.0f }
-	});
-
-	vertices.push_back({
-		{ 1.0f,  1.0f,  0.0f },
-		{ 0.0f,  0.0f,  0.0f },
-		{ 1.0f,  1.0f,  1.0f },
-		{ 1.0f,  1.0f }
-	});
-
-	auto& indices = mesh.indices();
-	indices.insert(indices.end(), {
-		0, 1, 2,
-		2, 3, 0
-	});
-
-	mesh.update();
-
-	OpenGL_Texture texture;
-	texture.set_upsampling_mode(OpenGL_Sampling_Mode::Point);
-	texture.set_downsampling_mode(OpenGL_Sampling_Mode::Point, false, OpenGL_Sampling_Mode::Point);
-	texture.set_max_anisotropy(1.0f);
-	texture.upload_bitmap_data(Bitmap { "grass.png" });
-
-	while (!window.should_close()) {
-		window.poll_events();
-		window.clear_buffer({ 0.0f, 0.0f, 0.0f });
-
-		program.use();
-		texture.bind(0);
-		program.uniform("uTexture")->store(0);
-
-		fmat4x4 world_view_projection;
-		world_view_projection = glm::translate(world_view_projection, { 0.0f, -0.75f, 0.0f });
-		world_view_projection = glm::scale(world_view_projection, { 1.0f / window.aspect_ratio(), 1.0f, 1.0f });
-		world_view_projection = glm::rotate(world_view_projection, pi<float>() / 4.0f, { 0.0f, 0.0f, 1.0f });
-
-		program.uniform("uWorldViewProjection")->store(world_view_projection);
-		
-		mesh.draw();
-
-		window.swap_buffers();
-	}
+	Test_Game { ws, cs }.run();
 }

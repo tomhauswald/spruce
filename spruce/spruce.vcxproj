@@ -94,6 +94,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="spruce_bitmap.h" />
+    <ClInclude Include="spruce_game.h" />
+    <ClInclude Include="spruce_game_object.h" />
     <ClInclude Include="spruce_mesh.h" />
     <ClInclude Include="spruce_common.h" />
     <ClInclude Include="spruce_graphics.h" />
@@ -101,6 +103,7 @@
     <ClInclude Include="spruce_opengl_array_buffer.h" />
     <ClInclude Include="spruce_opengl_buffer.h" />
     <ClInclude Include="spruce_opengl_element_buffer.h" />
+    <ClInclude Include="spruce_opengl_frame_buffer.h" />
     <ClInclude Include="spruce_opengl_item.h" />
     <ClInclude Include="spruce_opengl_program.h" />
     <ClInclude Include="spruce_opengl_shader.h" />
@@ -112,7 +115,11 @@
   <ItemGroup>
     <ClCompile Include="spruce_bitmap.cpp" />
     <ClCompile Include="spruce_common.cpp" />
+    <ClCompile Include="spruce_game.cpp" />
+    <ClCompile Include="spruce_game_object.cpp" />
     <ClCompile Include="spruce_log.cpp" />
+    <ClCompile Include="spruce_opengl_frame_buffer.cpp" />
+    <ClCompile Include="spruce_opengl_shader.cpp" />
     <ClCompile Include="spruce_opengl_texture.cpp" />
     <ClCompile Include="spruce_opengl_window.cpp" />
   </ItemGroup>

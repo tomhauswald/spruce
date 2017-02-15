@@ -31,6 +31,12 @@
     <Filter Include="Source Files\misc">
       <UniqueIdentifier>{c31a5a43-42c6-433c-b28c-95e9badde4b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\game">
+      <UniqueIdentifier>{44bcfd6d-6266-48a0-b9cc-9dc0bab3f997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game">
+      <UniqueIdentifier>{d278b8bd-9894-43f6-81b9-5a485f5bdda6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spruce_opengl_window.h">
@@ -78,6 +84,15 @@
     <ClInclude Include="spruce_bitmap.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="spruce_opengl_frame_buffer.h">
+      <Filter>Header Files\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_game.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_game_object.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_opengl_window.cpp">
@@ -94,6 +109,18 @@
     </ClCompile>
     <ClCompile Include="spruce_opengl_texture.cpp">
       <Filter>Source Files\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_opengl_frame_buffer.cpp">
+      <Filter>Source Files\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_opengl_shader.cpp">
+      <Filter>Source Files\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_game.cpp">
+      <Filter>Source Files\game</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_game_object.cpp">
+      <Filter>Source Files\game</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

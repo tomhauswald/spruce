@@ -81,4 +81,38 @@ namespace spruce {
 			glUnbindElementBuffer();
 		}
 	};
+
+	struct FSQ_Vertex {
+		fvec2 position;
+	};
+
+	class FSQ_Mesh : public Mesh<FSQ_Vertex> {
+	public:
+		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
+			vao.enable_attribute(0);
+			vao.store_fvec2_attribute(0);
+		}
+	};
+
+	struct Textured_Vertex {
+		fvec3 position;
+		fvec3 normal;
+		fvec3 color;
+		fvec2 uv;
+	};
+
+	class Textured_Mesh : public Mesh<Textured_Vertex> {
+	public:
+		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
+			vao.enable_attribute(0);
+			vao.enable_attribute(1);
+			vao.enable_attribute(2);
+			vao.enable_attribute(3);
+
+			vao.store_fvec3_attribute(0, sizeof(Textured_Vertex), 0 * sizeof(fvec3));
+			vao.store_fvec3_attribute(1, sizeof(Textured_Vertex), 1 * sizeof(fvec3));
+			vao.store_fvec3_attribute(2, sizeof(Textured_Vertex), 2 * sizeof(fvec3));
+			vao.store_fvec2_attribute(3, sizeof(Textured_Vertex), 3 * sizeof(fvec3));
+		}
+	};
 }
