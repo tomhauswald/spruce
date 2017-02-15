@@ -6,12 +6,13 @@ layout(location = 2) in vec3 color;
 layout(location = 3) in vec2 uv;
 
 out vec3 pass_color;
+out vec2 pass_uv;
 
-uniform mat4x4    uWorldViewProjection;
-uniform sampler2D uTexture;
+uniform mat4x4 uWorldViewProjection;
 
 void main() {
   gl_Position   = uWorldViewProjection * vec4(position, 1.0f);
   gl_Position.w = 1.0f;
-  pass_color    = texture(uTexture, uv).rgb;
+  pass_uv       = uv;
+  pass_color    = color;
 }

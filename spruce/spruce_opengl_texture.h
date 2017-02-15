@@ -20,6 +20,11 @@ namespace spruce {
 		void set_upsampling_mode(OpenGL_Sampling_Mode localMode);
 		void set_max_anisotropy(float max);
 
+		inline void bind(uint32_t textureUnitId) { 
+			glActiveTexture(GL_TEXTURE0 + textureUnitId); 
+			glBindTexture(GL_TEXTURE_2D, id_);
+		}
+
 		~OpenGL_Texture();
 	};
 }

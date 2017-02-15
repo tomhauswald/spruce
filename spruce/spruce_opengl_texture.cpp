@@ -6,20 +6,27 @@ spruce::OpenGL_Texture::OpenGL_Texture()
 	set_upsampling_mode(OpenGL_Sampling_Mode::Lerp);
 }
 
+#define OPENGL_TEXTURE_MIPMAPS
 void spruce::OpenGL_Texture::upload_bitmap_data(Bitmap const& bmp) {
 	panic_if(bmp.data() == nullptr, "Trying to upload initialized bitmap to GPU.");
+	
+	// Generate texture mipmaps.
 	glBindTexture(GL_TEXTURE_2D, id_);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 	glTexImage2D(
 		GL_TEXTURE_2D, 
-		0, 
-		bmp.channelCount() == 3 ? GL_RGB : GL_RGBA,
-		(GLsizei) bmp.width(), 
+		0,
+		GL_RGBA,
+		(GLsizei) bmp.width(),
 		(GLsizei) bmp.height(),
 		0,
-		bmp.channelCount() == 3 ? GL_RGB : GL_RGBA,
-		GL_UNSIGNED_BYTE, 
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
 		(GLvoid const*) bmp.data()
 	);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 }
 
 void spruce::OpenGL_Texture::set_downsampling_mode(OpenGL_Sampling_Mode localMode, bool useMipmaps, OpenGL_Sampling_Mode mipmapMode) {

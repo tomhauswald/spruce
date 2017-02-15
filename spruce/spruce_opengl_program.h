@@ -49,20 +49,7 @@ namespace spruce {
 		}
 
 		inline OpenGL_Uniform& add_uniform(std::string const& name) {
-
-			// Remember previous program.
-			GLuint prevProgramId;
-			glGetIntegerv(GL_PROGRAM, (GLint *) &prevProgramId);
-			
-			// Use this program.
-			if (prevProgramId != id_) { glUseProgram(id_); }
-
-			auto& added_uniform = *(uniforms_[name] = std::make_unique<OpenGL_Uniform>(id_, name)).get();
-
-			// Restore previous program.
-			if (prevProgramId != id_) { glUseProgram(prevProgramId); }
-
-			return added_uniform;
+			return *(uniforms_[name] = std::make_unique<OpenGL_Uniform>(id_, name)).get();
 		}
 
 		inline OpenGL_Uniform* uniform(std::string const& name) {

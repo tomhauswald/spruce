@@ -24,8 +24,8 @@ namespace spruce {
 	class OpenGL_Window {
 	private:
 		GLFWwindow* window_;
-		OpenGL_Window_Settings settings_;
-		OpenGL_Context_Settings openglSettings_;
+		OpenGL_Window_Settings window_settings_;
+		OpenGL_Context_Settings context_settings_;
 		
 		static std::string glfwErrorMsg_;
 
@@ -34,11 +34,13 @@ namespace spruce {
 		}
 
 	public:
-		OpenGL_Window(OpenGL_Window_Settings const& settings, OpenGL_Context_Settings const& openglSettings);
+		OpenGL_Window(OpenGL_Window_Settings const& window_settings, OpenGL_Context_Settings const& context_settings);
 		~OpenGL_Window();
 
-		inline auto const& settings() const { return settings_; }
-
+		inline OpenGL_Window_Settings const& window_settings() const { return window_settings_; }
+		inline OpenGL_Context_Settings const& context_settings() const { return context_settings_; }
+		inline float aspect_ratio() const { return window_settings_.width / static_cast<float>(window_settings_.height); }
+		
 		bool should_close() const;
 		void swap_buffers();
 		void poll_events();

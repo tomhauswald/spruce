@@ -84,21 +84,21 @@ int main() {
 	vertices.push_back({
 		{ -1.0f,  1.0f,  0.0f },
 		{  0.0f,  0.0f,  0.0f },
-		{  1.0f,  0.0f,  0.0f },
+		{  1.0f,  1.0f,  1.0f },
 		{  0.0f,  1.0f }
 	});
 
 	vertices.push_back({
 		{ -1.0f, -1.0f,  0.0f },
 		{  0.0f,  0.0f,  0.0f },
-		{  0.0f,  1.0f,  0.0f },
+		{  1.0f,  1.0f,  1.0f },
 		{  0.0f,  0.0f }
 	});
 
 	vertices.push_back({
 		{ 1.0f, -1.0f,  0.0f },
 		{ 0.0f,  0.0f,  0.0f },
-		{ 0.0f,  0.0f,  1.0f },
+		{ 1.0f,  1.0f,  1.0f },
 		{ 1.0f,  0.0f }
 	});
 
@@ -117,17 +117,26 @@ int main() {
 
 	mesh.update();
 
-	Bitmap bitmap { "crate.jpg" };
 	OpenGL_Texture texture;
-	texture.upload_bitmap_data(bitmap);
+	texture.set_upsampling_mode(OpenGL_Sampling_Mode::Point);
+	texture.set_downsampling_mode(OpenGL_Sampling_Mode::Point, false, OpenGL_Sampling_Mode::Point);
+	texture.set_max_anisotropy(1.0f);
+	texture.upload_bitmap_data(Bitmap { "grass.png" });
 
 	while (!window.should_close()) {
 		window.poll_events();
 		window.clear_buffer({ 0.0f, 0.0f, 0.0f });
 
 		program.use();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture.id());
+		texture.bind(0);
+		program.uniform("uTexture")->store(0);
+
+		fmat4x4 world_view_projection;
+		world_view_projection = glm::translate(world_view_projection, { 0.0f, -0.75f, 0.0f });
+		world_view_projection = glm::scale(world_view_projection, { 1.0f / window.aspect_ratio(), 1.0f, 1.0f });
+		world_view_projection = glm::rotate(world_view_projection, pi<float>() / 4.0f, { 0.0f, 0.0f, 1.0f });
+
+		program.uniform("uWorldViewProjection")->store(world_view_projection);
 		
 		mesh.draw();
 

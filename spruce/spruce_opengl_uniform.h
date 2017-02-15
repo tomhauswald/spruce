@@ -22,6 +22,7 @@ namespace spruce {
 
 	class OpenGL_Uniform {
 	private:
+		GLuint programId_;
 		GLuint location_;
 		std::string name_;
 		OpenGL_Uniform_Type type_;
@@ -43,9 +44,14 @@ namespace spruce {
 
 	public:
 		OpenGL_Uniform(GLuint programId, std::string const& name) 
-		: location_(glGetUniformLocation(programId, name.c_str())),
+		: programId_(programId),
+		  location_(glGetUniformLocation(programId, name.c_str())),
 		  name_(name) {
 		}
+
+		inline GLuint programId() const { return programId_; }
+		inline GLuint location() const { return location_; }
+		inline std::string const& name() const { return name_; }
 
 		inline float float_value() const {
 			panic_if(type_ != OpenGL_Uniform_Type::Float, "Invalid uniform access.");
@@ -100,61 +106,61 @@ namespace spruce {
 		inline void store(float value) {
 			type_ = OpenGL_Uniform_Type::Float;
 			value_.float_ = value;
-			glUniform1f(location_, value);
+			glProgramUniform1f(programId_, location_, value);
 		}
 
 		inline void store(double value) {
 			type_ = OpenGL_Uniform_Type::Double;
 			value_.double_ = value;
-			glUniform1d(location_, value);
+			glProgramUniform1d(programId_, location_, value);
 		}
 
 		inline void store(int32_t value) {
 			type_ = OpenGL_Uniform_Type::Int;
 			value_.int_ = value;
-			glUniform1i(location_, value);
+			glProgramUniform1i(programId_, location_, value);
 		}
 
 		inline void store(uint32_t value) {
 			type_ = OpenGL_Uniform_Type::Uint;
 			value_.uint_ = value;
-			glUniform1ui(location_, value);
+			glProgramUniform1ui(programId_, location_, value);
 		}
 
 		inline void store(fvec2 const& value) {
 			type_ = OpenGL_Uniform_Type::Fvec2;
 			value_.fvec2_ = value;
-			glUniform2fv(location_, 1, glm::value_ptr(value));
+			glProgramUniform2fv(programId_, location_, 1, glm::value_ptr(value));
 		}
 
 		inline void store(fvec3 const& value) {
 			type_ = OpenGL_Uniform_Type::Fvec3;
 			value_.fvec3_ = value;
-			glUniform3fv(location_, 1, glm::value_ptr(value));
+			glProgramUniform3fv(programId_, location_, 1, glm::value_ptr(value));
 		}
 
 		inline void store(fvec4 const& value) {
 			type_ = OpenGL_Uniform_Type::Fvec4;
 			value_.fvec4_ = value;
-			glUniform4fv(location_, 1, glm::value_ptr(value));
+			glProgramUniform4fv(programId_, location_, 1, glm::value_ptr(value));
 		}
 
 		inline void store(fmat2x2 const& value) {
 			type_ = OpenGL_Uniform_Type::Fmat2x2;
 			value_.fmat2x2_ = value;
-			glUniformMatrix2fv(location_, 1, GL_FALSE, glm::value_ptr(value));
+			glProgramUniformMatrix2fv(programId_, location_, 1, GL_FALSE, glm::value_ptr(value));
 		}
 
 		inline void store(fmat3x3 const& value) {
 			type_ = OpenGL_Uniform_Type::Fmat3x3;
 			value_.fmat3x3_ = value;
-			glUniformMatrix3fv(location_, 1, GL_FALSE, glm::value_ptr(value));
+			glProgramUniformMatrix3fv(programId_, location_, 1, GL_FALSE, glm::value_ptr(value));
 		}
 
 		inline void store(fmat4x4 const& value) {
 			type_ = OpenGL_Uniform_Type::Fmat4x4;
 			value_.fmat4x4_ = value;
-			glUniformMatrix4fv(location_, 1, GL_FALSE, glm::value_ptr(value));
+			glProgramUniformMatrix4fv(programId_, location_, 1, GL_FALSE, glm::value_ptr(value));
 		}
 	};
 }
