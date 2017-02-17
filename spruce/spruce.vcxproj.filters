@@ -93,6 +93,21 @@
     <ClInclude Include="spruce_game_object.h">
       <Filter>Header Files\game</Filter>
     </ClInclude>
+    <ClInclude Include="spruce_component.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_scene.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_mesh_renderer_component.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_deferred_renderer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_renderer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_opengl_window.cpp">
@@ -121,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="spruce_game_object.cpp">
       <Filter>Source Files\game</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_deferred_renderer.cpp">
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

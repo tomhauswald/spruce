@@ -93,7 +93,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="spruce_deferred_renderer.h" />
+    <ClInclude Include="spruce_renderer.h" />
+    <ClInclude Include="spruce_mesh_renderer_component.h" />
     <ClInclude Include="spruce_bitmap.h" />
+    <ClInclude Include="spruce_component.h" />
     <ClInclude Include="spruce_game.h" />
     <ClInclude Include="spruce_game_object.h" />
     <ClInclude Include="spruce_mesh.h" />
@@ -111,10 +115,12 @@
     <ClInclude Include="spruce_opengl_uniform.h" />
     <ClInclude Include="spruce_opengl_vertex_array.h" />
     <ClInclude Include="spruce_opengl_window.h" />
+    <ClInclude Include="spruce_scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_bitmap.cpp" />
     <ClCompile Include="spruce_common.cpp" />
+    <ClCompile Include="spruce_deferred_renderer.cpp" />
     <ClCompile Include="spruce_game.cpp" />
     <ClCompile Include="spruce_game_object.cpp" />
     <ClCompile Include="spruce_log.cpp" />

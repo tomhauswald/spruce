@@ -3,38 +3,71 @@
 #include "spruce_common.h"
 #include <unordered_map>
 #include <algorithm>
+#include "spruce_component.h"
 
 namespace spruce {
-	class Game;	
+	class Scene;	
 	class Game_Object;
-	using Game_Object_Map = std::unordered_map<uint64_t, std::unique_ptr<Game_Object>>;
 
 	class Game_Object {
 	protected:
-		uint64_t id_;
-		uint64_t flags_;
-		Game* game_;
-		Game_Object* parent_;
-		Game_Object_Map children_;
 		bool alive_;
 
-	public:
-		Game_Object(Game* game, Game_Object* parent);
+		Scene* scene_;
+		Game_Object* parent_;
+		std::unordered_map<std::string, std::unique_ptr<Game_Object>> children_;
+		std::unordered_map<std::string, std::unique_ptr<Component>> components_;
 
-		inline uint64_t id() const { return id_; }
-		inline uint64_t flags() const { return flags_; }
-		inline Game const* game() const { return game_; }
-		inline Game_Object const* parent() const { return parent_; }
-		inline Game_Object_Map const& children() const { return children_; }
-		inline Game_Object_Map& children() { return children_; }
+	public:
+		inline Scene* scene() { return scene_; }
+
+		inline Game_Object* parent() { return parent_; }
+
+		inline void set_scene(Scene* scene) { scene_ = scene; }
+
+		inline void set_parent(Game_Object* parent) { parent_ = parent; }
+
 		inline bool alive() const { return alive_; }
 
+
+		// Kills this game object and all its children.
 		void kill();
 
-		virtual void update(float dt);
-		virtual void draw();
+		// Initializes all components.
+		bool initialize();
 
-		void add_child(std::unique_ptr<Game_Object> child);
-		void remove_child(uint64_t id);
+		// Updates all components followed by all children.
+		void update(float dt);
+
+		// Draws all components followed by all children.
+		void draw();
+
+
+		// Adds a component.
+		Component* add_component(std::string const& name, std::unique_ptr<Component> component);
+
+		// Returns a component by name.
+		Component* component(std::string const& name);
+
+		// Deletes a component by name.
+		void delete_component(std::string const& name);
+
+		// Decouples a component by name, 
+		// allowing it to be added to another game object.
+		std::unique_ptr<Component> decouple_component(std::string const& name);
+
+
+		// Adds a child game object.
+		Game_Object* add_child(std::string const& name, std::unique_ptr<Game_Object> child);
+
+		// Returns a child game object by name.
+		Game_Object* child(std::string const& name);
+
+		// Deletes a child game object by name.
+		void delete_child(std::string const& name);
+
+		// Decouples a child game object by name, 
+		// allowing it to be reparented to another game object.
+		std::unique_ptr<Game_Object> decouple_child(std::string const& name);
 	};
 }

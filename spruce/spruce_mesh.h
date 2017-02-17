@@ -20,10 +20,8 @@ namespace spruce {
 		// Vertex array.
 		OpenGL_Vertex_Array vao_;
 
-        #ifdef _DEBUG
-		  // Initialization flag.
-		  bool initialized_ = false;
-        #endif
+		// Initialization flag.
+		bool initialized_ = false;
 
 	protected:
 		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) = 0;
@@ -42,10 +40,7 @@ namespace spruce {
 			glUnbindVertexArray();
 			glUnbindArrayBuffer();
 			glUnbindElementBuffer();
-
-			#ifdef _DEBUG
-			  initialized_ = true;
-			#endif
+			initialized_ = true;
 		}
 
 		inline std::vector<VertexFormat>& vertices() { return vertices_; }
@@ -54,23 +49,11 @@ namespace spruce {
 		inline std::vector<uint16_t>& indices() { return indices_; }
 		inline std::vector<uint16_t> const& indices() const { return indices_; }
 
-		void draw() {
-
-			#ifdef _DEBUG
-			  panic_if(!initialized_, "Trying to draw uninitialized mesh.");
-			#endif
-
-			vao_.bind();
-			glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
-			glUnbindVertexArray();
-		}
+		inline OpenGL_Vertex_Array& vertex_array() { return vao_; }
 
 		// Upload updated vertex and index data to GPU.
 		void update() {
-
-			#ifdef _DEBUG
-			  panic_if(!initialized_, "Trying to update uninitialized mesh.");
-			#endif
+			panic_if(!initialized_, "Trying to update uninitialized mesh.");
 
 			vbo_.bind();
 			vbo_.buffer(vertices_.size() * sizeof(VertexFormat), &vertices_[0]);

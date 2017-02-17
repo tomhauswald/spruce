@@ -10,6 +10,8 @@
 #include <spruce_bitmap.h>
 #include <spruce_opengl_frame_buffer.h>
 #include <spruce_game.h>
+#include <spruce_scene.h>
+#include <spruce_deferred_renderer.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -17,16 +19,30 @@
 
 using namespace spruce;
 
-class Test_Scene : public Game_Object {
+class Test_Scene : public Scene {
 private:
+	std::unique_ptr<OpenGL_Program> textured_program_;
 	std::unique_ptr<OpenGL_Texture> grass_texture_;
 	std::unique_ptr<Textured_Mesh> mesh_;
-	OpenGL_Program* program_;
 
 public:
-	Test_Scene(Game* game, Game_Object* parent, OpenGL_Program* program)
-		: Game_Object(game, parent),
-		  program_(program) {
+	bool initialize() {
+
+		// Load the shader program used to render geometry to the G-buffer.
+		textured_program_ = std::make_unique<OpenGL_Program>("textured");
+		{
+			OpenGL_Shader vs { OpenGL_Shader_Type::Vertex };
+			vs.compile_from_source("textured.vert");
+
+			OpenGL_Shader fs { OpenGL_Shader_Type::Fragment };
+			fs.compile_from_source("textured.frag");
+
+			textured_program_->attach_shader(vs);
+			textured_program_->attach_shader(fs);
+			textured_program_->link();
+			textured_program_->add_uniform("uWorldViewProjection").store(fmat4x4 { 1.0f });
+			textured_program_->add_uniform("uTexture");
+		}
 
 		// Construct test mesh.
 		mesh_ = std::make_unique<Textured_Mesh>();
@@ -69,58 +85,25 @@ public:
 		grass_texture_->set_downsampling_mode(OpenGL_Sampling_Mode::Point, false, OpenGL_Sampling_Mode::Point);
 		grass_texture_->set_max_anisotropy(1.0f);
 		grass_texture_->upload_bitmap_data(Bitmap { "grass.png" });
-	}
 
-	virtual void draw() {
-		program_->use();
-		program_->uniform("uTexture")->store(0);
-		grass_texture_->bind(0);
+		auto mr = (Textured_Mesh_Renderer_Component*) root()->add_component(
+			"mesh", 
+			std::make_unique<Textured_Mesh_Renderer_Component>()
+		);
+		mr->set_program(textured_program_.get());
+		mr->set_texture(grass_texture_.get());
+		mr->set_texture_uniform_name("uTexture");
+		mr->set_mesh(mesh_.get());
 
-		fmat4x4 world_view_projection;
-		world_view_projection = glm::translate(world_view_projection, { 0.0f, -0.75f, 0.0f });
-		world_view_projection = glm::scale(world_view_projection, { 1.0f / game_->window().aspect_ratio(), 1.0f, 1.0f });
-		world_view_projection = glm::rotate(world_view_projection, pi<float>() / 4.0f, { 0.0f, 0.0f, 1.0f });
-		program_->uniform("uWorldViewProjection")->store(world_view_projection);
-
-		mesh_->draw();
+		return Scene::initialize();
 	}
 };
 
 class Test_Game : public Game {
-private:
-	std::unique_ptr<OpenGL_Program> textured_program_;
-
 public:
-	Test_Game(OpenGL_Window_Settings const& window_settings,
-			  OpenGL_Context_Settings const& context_settings)
-		: Game(window_settings, context_settings) {
-	}
-
-	virtual bool initialize() {
-		// Load the shader program used to render geometry to the G-buffer.
-		textured_program_ = std::make_unique<OpenGL_Program>("textured");
-		{
-			OpenGL_Shader vs { OpenGL_Shader_Type::Vertex };
-			vs.compile_from_source("textured.vert");
-
-			OpenGL_Shader fs { OpenGL_Shader_Type::Fragment };
-			fs.compile_from_source("textured.frag");
-
-			textured_program_->attach_shader(vs);
-			textured_program_->attach_shader(fs);
-			textured_program_->link();
-			textured_program_->add_uniform("uWorldViewProjection");
-			textured_program_->add_uniform("uTexture");
-		}
-
-		scene_root_->add_child(
-			std::make_unique<Test_Scene>(
-			    this,
-			    scene_root_.get(),
-			    textured_program_.get()
-		    )
-		);
-		return true;
+	Test_Game() {
+		add_scene("main", std::make_unique<Test_Scene>());
+		set_start_scene("main");
 	}
 };
 
@@ -148,5 +131,12 @@ int main() {
 	cs.coreProfileEnabled = true;
 	cs.forwardCompatibilityEnabled = true;
 
-	Test_Game { ws, cs }.run();
+	Test_Game game;
+	game.set_window(std::make_unique<OpenGL_Window>(ws, cs));
+
+	auto renderer = std::make_unique<Deferred_Renderer>(&game);
+	renderer->initialize();
+	game.set_renderer(std::move(renderer));
+
+	game.run();
 }
