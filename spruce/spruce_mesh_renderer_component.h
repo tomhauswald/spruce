@@ -21,8 +21,6 @@ namespace spruce {
 		inline void set_program(OpenGL_Program* program) { program_ = program; }
 
 		void draw() override {
-			Log::msg << "Drawing mesh.\n";
-
 			if (program_ && mesh_) {
 				program_->use();
 				if (!prepare(program_)) return;

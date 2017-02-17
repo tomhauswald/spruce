@@ -8,7 +8,6 @@ namespace spruce {
 	}
 
 	void Deferred_Geometry_Pass::render(Scene* scene) {
-		Log::msg << "Rendering geometry pass.\n";
 		auto deferred_renderer = ((Deferred_Renderer*)renderer_);
 
 		// Prepare rendering to G-buffer.
@@ -60,7 +59,6 @@ namespace spruce {
 	}
 
 	void Deferred_Lighting_Pass::render(Scene* scene) {
-		Log::msg << "Rendering light pass.\n";
 		auto deferred_renderer = ((Deferred_Renderer*)renderer_);
 
 		// Restore default FBO.
@@ -82,7 +80,6 @@ namespace spruce {
 	}
 
 	bool Deferred_Renderer::initialize() {
-
 		position_texture_ = std::make_unique<OpenGL_Texture>();
 		position_texture_->upload_bitmap_data(
 			Bitmap {

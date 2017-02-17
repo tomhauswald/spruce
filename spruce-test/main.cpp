@@ -102,6 +102,28 @@ public:
 class Test_Game : public Game {
 public:
 	Test_Game() {
+
+		OpenGL_Window_Settings ws;
+		ws.caption = "Spruce Engine Test Application";
+		ws.width = 1280;
+		ws.height = 720;
+		ws.doubleBufferingEnabled = true;
+		ws.fullscreen = false;
+		ws.maximized = false;
+		ws.resizable = false;
+
+		OpenGL_Context_Settings cs;
+		cs.majorVersion = 4;
+		cs.minorVersion = 0;
+		cs.coreProfileEnabled = true;
+		cs.forwardCompatibilityEnabled = true;
+		
+		set_window(std::make_unique<OpenGL_Window>(ws, cs));
+
+		auto renderer = std::make_unique<Deferred_Renderer>(this);
+		renderer->initialize();
+		set_renderer(std::move(renderer));
+
 		add_scene("main", std::make_unique<Test_Scene>());
 		set_start_scene("main");
 	}
@@ -116,27 +138,5 @@ int main() {
 	Log::err.register_callback([](std::string const& message) { MessageBoxA(nullptr, message.c_str(), "Error", 0); });
 #endif
 
-	OpenGL_Window_Settings ws;
-	ws.caption = "Spruce Engine Test Application";
-	ws.width = 1280;
-	ws.height = 720;
-	ws.doubleBufferingEnabled = true;
-	ws.fullscreen = false;
-	ws.maximized = false;
-	ws.resizable = false;
-
-	OpenGL_Context_Settings cs;
-	cs.majorVersion = 4;
-	cs.minorVersion = 0;
-	cs.coreProfileEnabled = true;
-	cs.forwardCompatibilityEnabled = true;
-
-	Test_Game game;
-	game.set_window(std::make_unique<OpenGL_Window>(ws, cs));
-
-	auto renderer = std::make_unique<Deferred_Renderer>(&game);
-	renderer->initialize();
-	game.set_renderer(std::move(renderer));
-
-	game.run();
+	Test_Game {}.run();
 }
