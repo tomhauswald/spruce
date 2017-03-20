@@ -31,11 +31,14 @@
     <Filter Include="Source Files\misc">
       <UniqueIdentifier>{c31a5a43-42c6-433c-b28c-95e9badde4b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\game">
+    <Filter Include="Header Files\engine">
       <UniqueIdentifier>{44bcfd6d-6266-48a0-b9cc-9dc0bab3f997}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\game">
+    <Filter Include="Source Files\engine">
       <UniqueIdentifier>{d278b8bd-9894-43f6-81b9-5a485f5bdda6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\components">
+      <UniqueIdentifier>{6df57918-38b6-42fe-a593-81600135a2d2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,25 +91,28 @@
       <Filter>Header Files\graphics\opengl</Filter>
     </ClInclude>
     <ClInclude Include="spruce_game.h">
-      <Filter>Header Files\game</Filter>
+      <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="spruce_game_object.h">
-      <Filter>Header Files\game</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_component.h">
-      <Filter>Header Files\game</Filter>
+      <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="spruce_scene.h">
-      <Filter>Header Files\game</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_mesh_renderer_component.h">
-      <Filter>Header Files\game</Filter>
+      <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="spruce_deferred_renderer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="spruce_renderer.h">
       <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_component.h">
+      <Filter>Header Files\engine\components</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_mesh_renderer_component.h">
+      <Filter>Header Files\engine\components</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_transform_component.h">
+      <Filter>Header Files\engine\components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,10 +138,10 @@
       <Filter>Source Files\graphics\opengl</Filter>
     </ClCompile>
     <ClCompile Include="spruce_game.cpp">
-      <Filter>Source Files\game</Filter>
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="spruce_game_object.cpp">
-      <Filter>Source Files\game</Filter>
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="spruce_deferred_renderer.cpp">
       <Filter>Source Files\graphics</Filter>

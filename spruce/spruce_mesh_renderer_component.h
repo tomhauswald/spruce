@@ -4,6 +4,7 @@
 #include "spruce_mesh.h"
 #include "spruce_opengl_texture.h"
 #include "spruce_opengl_program.h"
+#include "spruce_transform_component.h"
 
 namespace spruce {
 
@@ -22,6 +23,9 @@ namespace spruce {
 
 		void draw() override {
 			if (program_ && mesh_) {
+				program_->uniform("uWorldViewProjection")->store(
+					((Transform_Component*)owner_->component("transform"))->world()
+				);
 				program_->use();
 				if (!prepare(program_)) return;
 
