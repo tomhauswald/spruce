@@ -40,6 +40,9 @@
     <Filter Include="Header Files\engine\components">
       <UniqueIdentifier>{6df57918-38b6-42fe-a593-81600135a2d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\engine\components">
+      <UniqueIdentifier>{004f8166-0d95-4330-bf51-37034e944fae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spruce_opengl_window.h">
@@ -114,6 +117,9 @@
     <ClInclude Include="spruce_transform.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
+    <ClInclude Include="spruce_textured_mesh_renderer_component.h">
+      <Filter>Header Files\engine\components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_opengl_window.cpp">
@@ -148,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="spruce_transform.cpp">
       <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_textured_mesh_renderer_component.cc">
+      <Filter>Source Files\engine\components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

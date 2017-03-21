@@ -29,7 +29,11 @@ namespace spruce {
 
 	public:
 		Transform(Game_Object* object, Transform* parent = nullptr) :
-			object_(object) {
+			object_(object),
+			local_position_ { 0,0,0 },
+			local_rotation_ {},
+			local_scale_ { 1,1,1 },
+			local_matrix_ { 1.0f } {
 			set_parent(parent);
 		}
 
@@ -56,8 +60,8 @@ namespace spruce {
 			return world_rotation_;
 		}
 
-		inline vec3 euler() const { 
-			return glm::eulerAngles(world_rotation_);
+		inline vec3 pitch_yaw_roll() const { 
+			return { pitch(), yaw(), roll() };
 		}
 
 		inline float pitch() const { 
@@ -114,8 +118,8 @@ namespace spruce {
 			return local_rotation_;
 		}
 
-		inline vec3 local_euler() const { 
-			return glm::eulerAngles(local_rotation_); 
+		inline vec3 local_pitch_yaw_roll() const { 
+			return { local_pitch(), local_yaw(), local_roll() };
 		}
 
 		inline float local_pitch() const { 
@@ -189,19 +193,16 @@ namespace spruce {
 			update_transform();
 		}
 
-		inline void set_local_pitch(float pitch) { 
-			local_rotation_ = glm::eulerAngleXYZ(pitch, local_yaw(), local_roll());
-			update_transform();
+		inline void set_local_pitch(float pitch) {
+			set_local_rotation(pitch, local_yaw(), local_roll());
 		}
 
 		inline void set_local_yaw(float yaw) {
-			local_rotation_ = glm::eulerAngleXYZ(local_pitch(), yaw, local_roll());
-			update_transform();
+			set_local_rotation(local_pitch(), yaw, local_roll());
 		}
 
 		inline void set_local_roll(float roll) { 
-			local_rotation_ = glm::eulerAngleXYZ(local_pitch(), local_yaw(), roll); 
-			update_transform();
+			set_local_rotation(local_pitch(), local_yaw(), roll);
 		}
 
 

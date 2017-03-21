@@ -4,6 +4,7 @@
 #include "spruce_mesh.h"
 #include "spruce_opengl_texture.h"
 #include "spruce_opengl_program.h"
+#include "spruce_game_object.h"
 
 namespace spruce {
 
@@ -12,6 +13,8 @@ namespace spruce {
 	private:
 		MeshType* mesh_;
 		OpenGL_Program* program_;
+		mat4 view_matrix_;
+		mat4 projection_matrix_;
 
 	protected:
 		virtual bool prepare(OpenGL_Program* program) { return true; }
@@ -19,11 +22,15 @@ namespace spruce {
 	public:
 		inline void set_mesh(MeshType* mesh) { mesh_ = mesh; }
 		inline void set_program(OpenGL_Program* program) { program_ = program; }
+		inline void set_view_matrix(mat4 const& matrix) { view_matrix_ = matrix; }
+		inline void set_projection_matrix(mat4 const& matrix) { projection_matrix_ = matrix; }
 
 		void draw() override {
 			if (program_ && mesh_) {
-				program_->uniform("uWorldViewProjection")->store(owner_->transform()->world());
 				program_->use();
+				program_->uniform("uModel")->store(owner_->transform()->world());
+				program_->uniform("uView")->store(view_matrix_);
+				program_->uniform("uProjection")->store(projection_matrix_);
 
 				if (prepare(program_)) {
 					mesh_->vertex_array().bind();
@@ -32,24 +39,5 @@ namespace spruce {
 				}
 			}
 		}
-	};
-
-	class Textured_Mesh_Renderer_Component : public Mesh_Renderer_Component<Textured_Mesh> {
-	private:
-		OpenGL_Texture* texture_;
-		std::string texture_uniform_name_;
-
-	protected:
-		virtual bool prepare(OpenGL_Program* program) override {
-			if (!texture_) return false;
-			if (texture_uniform_name_.length() == 0) return false;
-			texture_->bind(0);
-			program->uniform(texture_uniform_name_)->store(0);
-			return true;
-		}
-
-	public:
-		inline void set_texture(OpenGL_Texture* texture) { texture_ = texture; }
-		inline void set_texture_uniform_name(std::string const& name) { texture_uniform_name_ = name; }
 	};
 }

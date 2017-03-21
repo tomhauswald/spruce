@@ -10,11 +10,13 @@ out vec3 pass_normal;
 out vec3 pass_color;
 out vec2 pass_uv;
 
-uniform mat4x4 uWorldViewProjection;
+uniform mat4x4 uModelMatrix;
+uniform mat4x4 uViewMatrix;
+uniform mat4x4 uProjectionMatrix;
 
 void main() {
-  pass_position = (uWorldViewProjection * vec4(position, 1.0f)).xyz;
-  pass_normal   = (uWorldViewProjection * vec4(normal,   0.0f)).xyz;
+  pass_position = (uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(position, 1.0f)).xyz;
+  pass_normal   = (uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(normal,   0.0f)).xyz;
   pass_color    = color;
   pass_uv       = uv;
 

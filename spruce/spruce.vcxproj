@@ -116,6 +116,7 @@
     <ClInclude Include="spruce_opengl_vertex_array.h" />
     <ClInclude Include="spruce_opengl_window.h" />
     <ClInclude Include="spruce_scene.h" />
+    <ClInclude Include="spruce_textured_mesh_renderer_component.h" />
     <ClInclude Include="spruce_transform.h" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +126,7 @@
     <ClCompile Include="spruce_game.cpp" />
     <ClCompile Include="spruce_game_object.cpp" />
     <ClCompile Include="spruce_log.cpp" />
+    <ClCompile Include="spruce_textured_mesh_renderer_component.cc" />
     <ClCompile Include="spruce_opengl_frame_buffer.cpp" />
     <ClCompile Include="spruce_opengl_shader.cpp" />
     <ClCompile Include="spruce_opengl_texture.cpp" />

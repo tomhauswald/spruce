@@ -12,7 +12,7 @@ namespace spruce {
 	void Transform::update_transform() {
 		local_matrix_ =
 			glm::translate(local_position_) *
-			glm::eulerAngleXYZ(local_rotation_.x, local_rotation_.y, local_rotation_.z) *
+			glm::yawPitchRoll(local_rotation_.y, local_rotation_.x, local_rotation_.z) *
 			glm::scale(local_scale_);
 
 		if (parent_ != nullptr) {

@@ -13,12 +13,27 @@
 #include <spruce_scene.h>
 #include <spruce_deferred_renderer.h>
 #include <spruce_transform.h>
+#include <spruce_textured_mesh_renderer_component.h>
 
 #ifdef _WIN32
 #include <Windows.h>
 #endif
 
 using namespace spruce;
+
+class Demo_Component : public Component {
+private:
+	float rotation_speed_;
+public:
+	Demo_Component(float rotation_speed) :
+		rotation_speed_ { rotation_speed } {
+	}
+
+	void update(float dt) override {
+		owner_->transform()->set_local_yaw(owner_->transform()->local_yaw() + rotation_speed_ * dt);
+		Component::update(dt);
+	}
+};
 
 class Test_Scene : public Scene {
 private:
@@ -41,7 +56,9 @@ public:
 			textured_program_->attach_shader(vs);
 			textured_program_->attach_shader(fs);
 			textured_program_->link();
-			textured_program_->add_uniform("uWorldViewProjection").store(fmat4x4 { 1.0f });
+			textured_program_->add_uniform("uModel").store(fmat4x4 { 1.0f });
+			textured_program_->add_uniform("uView").store(fmat4x4 { 1.0f });
+			textured_program_->add_uniform("uProjection").store(fmat4x4 { 1.0f });
 			textured_program_->add_uniform("uTexture");
 		}
 
@@ -49,34 +66,38 @@ public:
 		mesh_ = std::make_unique<Textured_Mesh>();
 		mesh_->initialize();
 		auto& vertices = mesh_->vertices();
+		
+		// Front
 		vertices.push_back({
-			{ -1.0f,  1.0f,  0.0f },
-			{ 0.0f,  0.0f,  0.0f },
-			{ 1.0f,  1.0f,  1.0f },
-			{ 0.0f,  1.0f }
+			{ -1, -1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 0 }
 		});
 		vertices.push_back({
-			{ -1.0f, -1.0f,  0.0f },
-			{ 0.0f,  0.0f,  0.0f },
-			{ 1.0f,  1.0f,  1.0f },
-			{ 0.0f,  0.0f }
+			{ 1, -1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 0, 0 }
 		});
 		vertices.push_back({
-			{ 1.0f, -1.0f,  0.0f },
-			{ 0.0f,  0.0f,  0.0f },
-			{ 1.0f,  1.0f,  1.0f },
-			{ 1.0f,  0.0f }
+			{ -1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 1 }
 		});
 		vertices.push_back({
-			{ 1.0f,  1.0f,  0.0f },
-			{ 0.0f,  0.0f,  0.0f },
-			{ 1.0f,  1.0f,  1.0f },
-			{ 1.0f,  1.0f }
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 0, 1 }
 		});
+
 		auto& indices = mesh_->indices();
 		indices.insert(indices.end(), {
+			// front
 			0, 1, 2,
-			2, 3, 0
+			1, 3, 2
 		});
 		mesh_->update();
 
@@ -87,25 +108,26 @@ public:
 		grass_texture_->set_max_anisotropy(1.0f);
 		grass_texture_->upload_bitmap_data(Bitmap { "grass.png" });
 
-		auto root_transform = root()->transform();
-		root_transform->set_local_position(0.5f, 0, 0);
-		root_transform->set_local_rotation(0, 0, 0);
-		root_transform->set_local_scale(1, 1, 1);
-
+		// Create test object.
 		auto obj = root()->add_child("object", std::make_unique<Game_Object>());
-		auto obj_transform = obj->transform();
-		obj_transform->set_local_position(0, 0, 0);
-		obj_transform->set_local_rotation(0, 0, 0);
-		obj_transform->set_local_scale(0.5f, 0.5f, 1);
 
 		auto obj_renderer = (Textured_Mesh_Renderer_Component*) obj->add_component(
 			"mesh", 
 			std::make_unique<Textured_Mesh_Renderer_Component>()
 		);
 		obj_renderer->set_program(textured_program_.get());
-		obj_renderer->set_texture(grass_texture_.get());
-		obj_renderer->set_texture_uniform_name("uTexture");
 		obj_renderer->set_mesh(mesh_.get());
+		obj_renderer->set_texture_uniform_name("uTexture");
+		obj_renderer->set_texture(grass_texture_.get());
+
+		auto view = glm::lookAt(vec3 { 3, 3, 3 }, { 0, 0, 0 }, { 0, 1, 0 });
+		obj_renderer->set_view_matrix(view);
+
+		auto fov = 45.0f;
+		auto projection = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 100.0f);
+		obj_renderer->set_projection_matrix(projection);
+
+		auto obj_rotator = (Demo_Component*)obj->add_component("demo", std::make_unique<Demo_Component>(0));
 
 		return Scene::initialize();
 	}
@@ -138,6 +160,9 @@ public:
 
 		add_scene("main", std::make_unique<Test_Scene>());
 		set_start_scene("main");
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 	}
 };
 
