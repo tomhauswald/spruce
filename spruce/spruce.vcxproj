@@ -116,7 +116,7 @@
     <ClInclude Include="spruce_opengl_vertex_array.h" />
     <ClInclude Include="spruce_opengl_window.h" />
     <ClInclude Include="spruce_scene.h" />
-    <ClInclude Include="spruce_transform_component.h" />
+    <ClInclude Include="spruce_transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_bitmap.cpp" />
@@ -129,6 +129,7 @@
     <ClCompile Include="spruce_opengl_shader.cpp" />
     <ClCompile Include="spruce_opengl_texture.cpp" />
     <ClCompile Include="spruce_opengl_window.cpp" />
+    <ClCompile Include="spruce_transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -111,8 +111,8 @@
     <ClInclude Include="spruce_mesh_renderer_component.h">
       <Filter>Header Files\engine\components</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_transform_component.h">
-      <Filter>Header Files\engine\components</Filter>
+    <ClInclude Include="spruce_transform.h">
+      <Filter>Header Files\engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="spruce_deferred_renderer.cpp">
       <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_transform.cpp">
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

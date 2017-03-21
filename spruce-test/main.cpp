@@ -12,7 +12,7 @@
 #include <spruce_game.h>
 #include <spruce_scene.h>
 #include <spruce_deferred_renderer.h>
-#include <spruce_transform_component.h>
+#include <spruce_transform.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -80,8 +80,6 @@ public:
 		});
 		mesh_->update();
 
-		auto transform_ = std::make_unique<Transform_Component>();
-
 		// Load texture.
 		grass_texture_ = std::make_unique<OpenGL_Texture>();
 		grass_texture_->set_upsampling_mode(OpenGL_Sampling_Mode::Point);
@@ -89,26 +87,25 @@ public:
 		grass_texture_->set_max_anisotropy(1.0f);
 		grass_texture_->upload_bitmap_data(Bitmap { "grass.png" });
 
-		auto obj = root()->add_child("object", std::make_unique<Game_Object>());
-		
-		auto transform = (Transform_Component*)obj->add_component(
-			"transform",
-			std::make_unique<Transform_Component>()
-		);
-		
-		transform->set_local_position(0, 0, 0);
-		transform->set_local_rotation(0, 0, 0);
-		transform->set_local_scale(1, 1, 1);
+		auto root_transform = root()->transform();
+		root_transform->set_local_position(0.5f, 0, 0);
+		root_transform->set_local_rotation(0, 0, 0);
+		root_transform->set_local_scale(1, 1, 1);
 
-		auto mesh_renderer = (Textured_Mesh_Renderer_Component*) obj->add_component(
+		auto obj = root()->add_child("object", std::make_unique<Game_Object>());
+		auto obj_transform = obj->transform();
+		obj_transform->set_local_position(0, 0, 0);
+		obj_transform->set_local_rotation(0, 0, 0);
+		obj_transform->set_local_scale(0.5f, 0.5f, 1);
+
+		auto obj_renderer = (Textured_Mesh_Renderer_Component*) obj->add_component(
 			"mesh", 
 			std::make_unique<Textured_Mesh_Renderer_Component>()
 		);
-		
-		mesh_renderer->set_program(textured_program_.get());
-		mesh_renderer->set_texture(grass_texture_.get());
-		mesh_renderer->set_texture_uniform_name("uTexture");
-		mesh_renderer->set_mesh(mesh_.get());
+		obj_renderer->set_program(textured_program_.get());
+		obj_renderer->set_texture(grass_texture_.get());
+		obj_renderer->set_texture_uniform_name("uTexture");
+		obj_renderer->set_mesh(mesh_.get());
 
 		return Scene::initialize();
 	}

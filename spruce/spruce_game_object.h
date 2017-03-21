@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include "spruce_component.h"
+#include "spruce_transform.h"
 
 namespace spruce {
 	class Scene;	
@@ -15,19 +16,40 @@ namespace spruce {
 
 		Scene* scene_;
 		Game_Object* parent_;
+		std::unique_ptr<Transform> transform_;
 		std::unordered_map<std::string, std::unique_ptr<Game_Object>> children_;
 		std::unordered_map<std::string, std::unique_ptr<Component>> components_;
 
 	public:
+		Game_Object(Game_Object* parent = nullptr) :
+			alive_ { false },
+			scene_ { nullptr },
+			parent_ { nullptr },
+			transform_ { nullptr },
+			children_ {},
+			components_ {} {
+			
+			transform_ = std::make_unique<Transform>(this);
+			set_parent(parent);
+		}
+
 		inline Scene* scene() { return scene_; }
 
 		inline Game_Object* parent() { return parent_; }
 
 		inline void set_scene(Scene* scene) { scene_ = scene; }
 
-		inline void set_parent(Game_Object* parent) { parent_ = parent; }
+		inline void set_parent(Game_Object* parent) { 
+			auto parent_transform = (parent != nullptr) ? parent->transform() : nullptr;
+			parent_ = parent; 
+			transform_->set_parent(parent_transform);
+		}
 
 		inline bool alive() const { return alive_; }
+
+		inline Transform const* transform() const { return transform_.get(); }
+
+		inline Transform* transform() { return transform_.get(); }
 
 
 		// Kills this game object and all its children.
@@ -69,5 +91,13 @@ namespace spruce {
 		// Decouples a child game object by name, 
 		// allowing it to be reparented to another game object.
 		std::unique_ptr<Game_Object> decouple_child(std::string const& name);
+
+
+		// Notify child game objects of a change of the parent transform.
+		void transform_changed() {
+			for (auto& child : children_) {
+				child.second->transform()->parent_transform_changed();
+			}
+		}
 	};
 }

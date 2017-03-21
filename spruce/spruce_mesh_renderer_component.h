@@ -4,7 +4,6 @@
 #include "spruce_mesh.h"
 #include "spruce_opengl_texture.h"
 #include "spruce_opengl_program.h"
-#include "spruce_transform_component.h"
 
 namespace spruce {
 
@@ -23,15 +22,14 @@ namespace spruce {
 
 		void draw() override {
 			if (program_ && mesh_) {
-				program_->uniform("uWorldViewProjection")->store(
-					((Transform_Component*)owner_->component("transform"))->world()
-				);
+				program_->uniform("uWorldViewProjection")->store(owner_->transform()->world());
 				program_->use();
-				if (!prepare(program_)) return;
 
-				mesh_->vertex_array().bind();
-				glDrawElements(GL_TRIANGLES, mesh_->indices().size(), GL_UNSIGNED_SHORT, nullptr);
-				glUnbindVertexArray();
+				if (prepare(program_)) {
+					mesh_->vertex_array().bind();
+					glDrawElements(GL_TRIANGLES, mesh_->indices().size(), GL_UNSIGNED_SHORT, nullptr);
+					glUnbindVertexArray();
+				}
 			}
 		}
 	};
