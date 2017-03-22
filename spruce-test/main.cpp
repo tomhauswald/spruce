@@ -46,7 +46,6 @@ public:
 
 	void update(float dt) override {
 		owner_->transform()->set_local_yaw(owner_->transform()->local_yaw() + rotation_speed_ * dt);
-		print_vec3(owner_->transform()->pitch_yaw_roll());
 	}
 };
 
@@ -80,36 +79,123 @@ public:
 		mesh_->initialize();
 		auto& vertices = mesh_->vertices();
 		
-		// Front
+		// Back
 		vertices.push_back({
-			{ -0.5f, 0.5f, -0.5f },
-			{ 1, 1, 1 },
-			{ 1, 1, 1 },
+			{ -0.5f, 0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
 			{ 0, 0 }
 		});
 		vertices.push_back({
-			{ -0.5f, -0.5f, -0.5f },
-			{ 1, 1, 1 },
-			{ 1, 1, 1 },
+			{ -0.5f, -0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, 0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 1, 0 }
+		});
+
+		// Right
+		vertices.push_back({
+			{ 0.5f, 0.5f, 0.5f },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, 0.5f },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
 			{ 0, 1 }
 		});
 		vertices.push_back({
 			{ 0.5f, -0.5f, -0.5f },
-			{ 1, 1, 1 },
-			{ 1, 1, 1 },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
 			{ 1, 1 }
 		});
 		vertices.push_back({
 			{ 0.5f, 0.5f, -0.5f },
-			{ 1, 1, 1 },
-			{ 1, 1, 1 },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
+			{ 1, 0 }
+		});
+
+		// Left
+		vertices.push_back({
+			{ -0.5f, 0.5f, -0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, -0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, 0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, 0.5f, 0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 1, 0 }
+		});
+
+		// Front
+		vertices.push_back({
+			{ 0.5f, 0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, 0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
 			{ 1, 0 }
 		});
 
 		auto& indices = mesh_->indices();
 		indices.insert(indices.end(), {
 			0, 1, 2,
-			2, 3, 0
+			2, 3, 0,
+
+			4, 5, 6,
+			6, 7, 4,
+
+			8, 9, 10,
+			10, 11, 8,
+
+			12, 13, 14,
+			14, 15, 12
 		});
 		mesh_->update();
 
@@ -138,6 +224,7 @@ public:
 		auto projection = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 100.0f);
 		obj_renderer->set_view_projection_matrix(projection * view);
 
+		//obj->transform()->set_local_yaw(glm::radians(45.0f));
 		obj->add_component("demo", std::make_unique<Demo_Component>(1000));
 
 		return Scene::initialize();
@@ -173,7 +260,10 @@ public:
 		set_start_scene("main");
 
 		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
+		glDepthFunc(GL_LEQUAL);
+		glFrontFace(GL_CCW);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 	}
 };
 

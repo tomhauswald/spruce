@@ -9,18 +9,18 @@ namespace spruce {
 	private:
 		Game_Object* object_;
 		vec3 local_position_;
-		quat local_orientation_;
+		vec3 local_orientation_;
 		vec3 local_scale_;
 		mat4 parent_to_model_;
 
 		Transform* parent_;
 		vec3 parent_position_;
-		quat parent_orientation_;
+		vec3 parent_orientation_;
 		vec3 parent_scale_;
 		mat4 world_to_parent_;
 
 		vec3 world_position_;
-		quat world_orientation_;
+		vec3 world_orientation_;
 		vec3 world_scale_;
 		mat4 world_to_model_;
 
@@ -56,24 +56,20 @@ namespace spruce {
 
 
 		// Get world-space rotation.
-		inline quat const& orientation() const {
+		inline vec3 orientation() const {
 			return world_orientation_;
 		}
 
-		inline vec3 pitch_yaw_roll() const {
-			return { pitch(), yaw(), roll() };
-		}
-
 		inline float pitch() const {
-			return glm::pitch(world_orientation_);
+			return world_orientation_.x;
 		}
 
 		inline float yaw() const {
-			return glm::yaw(world_orientation_);
+			return world_orientation_.y;
 		}
 
 		inline float roll() const {
-			return glm::roll(world_orientation_);
+			return world_orientation_.z;
 		}
 
 
@@ -113,25 +109,21 @@ namespace spruce {
 		}
 
 
-		// Get local rotation.
-		inline quat const& local_orientation() const {
+		// Get local orientation.
+		inline vec3 local_orientation() const {
 			return local_orientation_;
 		}
 
-		inline vec3 local_pitch_yaw_roll() const {
-			return { local_pitch(), local_yaw(), local_roll() };
-		}
-
 		inline float local_pitch() const {
-			return glm::pitch(local_orientation_);
+			return local_orientation_.x;
 		}
 
 		inline float local_yaw() const {
-			return glm::yaw(local_orientation_);
+			return local_orientation_.y;
 		}
 
 		inline float local_roll() const {
-			return glm::roll(local_orientation_);
+			return local_orientation_.z;
 		}
 
 
@@ -183,17 +175,13 @@ namespace spruce {
 
 
 		// Set local rotation.
-		inline void set_local_orientation(quat const& rotation) {
-			local_orientation_ = rotation;
+		inline void set_local_orientation(vec3 const& orientation) {
+			local_orientation_ = orientation;
 			update_transform();
 		}
 
 		inline void set_local_orientation(float pitch, float yaw, float roll) {
-			set_local_orientation(
-				glm::angleAxis(pitch, vec3 { 1, 0, 0 }) *
-				glm::angleAxis(yaw, vec3 { 0, 1, 0 }) *
-				glm::angleAxis(roll, vec3 { 0, 0, 1 })
-			);
+			set_local_orientation({ pitch, yaw, roll });
 		}
 
 		inline void set_local_pitch(float pitch) {

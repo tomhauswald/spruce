@@ -11,18 +11,22 @@ namespace spruce {
 
 	void Transform::update_transform() {
 		parent_to_model_ =
-			glm::translate(local_position_) *
-			glm::rotate(local_orientation_.x, vec3 { 1, 0, 0 }) *
-			glm::rotate(local_orientation_.y, vec3 { 0, 1, 0 }) *
-			glm::rotate(local_orientation_.z, vec3 { 0, 0, 1 }) *
-			glm::scale(local_scale_);
+			glm::translate(local_position_) 
+			* glm::eulerAngleXYZ(
+			    local_orientation_.x,
+			    local_orientation_.y,
+			    local_orientation_.z)
+			* glm::scale(local_scale_);
 
 		if (parent_ != nullptr) {
 			world_to_model_ = parent_to_model_ * world_to_parent_;
 		}
 		else {
 			world_to_model_ = parent_to_model_;
-			decompose_matrix(world_to_model_, world_position_, world_orientation_, world_scale_);
+
+			quat orient;
+			decompose_matrix(world_to_model_, world_position_, orient, world_scale_);
+			world_orientation_ = eulerAngles(orient);
 		}
 
 		object_->transform_changed();
@@ -31,11 +35,14 @@ namespace spruce {
 	void Transform::parent_transform_changed() {
 		if (parent_ != nullptr) {
 			world_to_parent_ = parent_->model_matrix();
-			decompose_matrix(world_to_parent_, parent_position_, parent_orientation_, parent_scale_);
+
+			quat orient;
+			decompose_matrix(world_to_parent_, parent_position_, orient, parent_scale_);
+			parent_orientation_ = eulerAngles(orient);
 		}
 		else {
-			parent_position_ = vec3 {};
-			parent_orientation_ = quat {};
+			parent_position_ = vec3 { 0.0f };
+			parent_orientation_ = vec3 { 0.0f };
 			parent_scale_ = vec3 { 1, 1, 1 };
 			world_to_parent_ = mat4 { 1.0f };
 		}
