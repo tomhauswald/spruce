@@ -21,9 +21,24 @@
 
 using namespace spruce;
 
+void print_mat4(mat4 const& m) {
+	for (auto i = 0; i < 4; ++i) {
+		for (auto j = 0; j < 4; ++j) {
+			std::cout << m[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+void print_vec3(vec3 const& v) {
+	std::cout << "[ " << v.x << "\t" << v.y << "\t" << v.z << " ]" << std::endl;
+}
+
 class Demo_Component : public Component {
 private:
 	float rotation_speed_;
+
 public:
 	Demo_Component(float rotation_speed) :
 		rotation_speed_ { rotation_speed } {
@@ -31,7 +46,7 @@ public:
 
 	void update(float dt) override {
 		owner_->transform()->set_local_yaw(owner_->transform()->local_yaw() + rotation_speed_ * dt);
-		Component::update(dt);
+		print_vec3(owner_->transform()->pitch_yaw_roll());
 	}
 };
 
@@ -56,9 +71,7 @@ public:
 			textured_program_->attach_shader(vs);
 			textured_program_->attach_shader(fs);
 			textured_program_->link();
-			textured_program_->add_uniform("uModel").store(fmat4x4 { 1.0f });
-			textured_program_->add_uniform("uView").store(fmat4x4 { 1.0f });
-			textured_program_->add_uniform("uProjection").store(fmat4x4 { 1.0f });
+			textured_program_->add_uniform("uMVP");
 			textured_program_->add_uniform("uTexture");
 		}
 
@@ -69,35 +82,34 @@ public:
 		
 		// Front
 		vertices.push_back({
-			{ -1, -1, 1 },
-			{ 1, 1, 1 },
-			{ 1, 1, 1 },
-			{ 1, 0 }
-		});
-		vertices.push_back({
-			{ 1, -1, 1 },
+			{ -0.5f, 0.5f, -0.5f },
 			{ 1, 1, 1 },
 			{ 1, 1, 1 },
 			{ 0, 0 }
 		});
 		vertices.push_back({
-			{ -1, 1, 1 },
+			{ -0.5f, -0.5f, -0.5f },
+			{ 1, 1, 1 },
+			{ 1, 1, 1 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, -0.5f },
 			{ 1, 1, 1 },
 			{ 1, 1, 1 },
 			{ 1, 1 }
 		});
 		vertices.push_back({
+			{ 0.5f, 0.5f, -0.5f },
 			{ 1, 1, 1 },
 			{ 1, 1, 1 },
-			{ 1, 1, 1 },
-			{ 0, 1 }
+			{ 1, 0 }
 		});
 
 		auto& indices = mesh_->indices();
 		indices.insert(indices.end(), {
-			// front
 			0, 1, 2,
-			1, 3, 2
+			2, 3, 0
 		});
 		mesh_->update();
 
@@ -118,16 +130,15 @@ public:
 		obj_renderer->set_program(textured_program_.get());
 		obj_renderer->set_mesh(mesh_.get());
 		obj_renderer->set_texture_uniform_name("uTexture");
+		obj_renderer->set_mvp_uniform_name("uMVP");
 		obj_renderer->set_texture(grass_texture_.get());
 
-		auto view = glm::lookAt(vec3 { 3, 3, 3 }, { 0, 0, 0 }, { 0, 1, 0 });
-		obj_renderer->set_view_matrix(view);
-
 		auto fov = 45.0f;
+		auto view = glm::lookAt(vec3 { 0, 0, -10 }, { 0, 0, 0 }, { 0, 1, 0 });
 		auto projection = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 100.0f);
-		obj_renderer->set_projection_matrix(projection);
+		obj_renderer->set_view_projection_matrix(projection * view);
 
-		auto obj_rotator = (Demo_Component*)obj->add_component("demo", std::make_unique<Demo_Component>(0));
+		obj->add_component("demo", std::make_unique<Demo_Component>(1000));
 
 		return Scene::initialize();
 	}

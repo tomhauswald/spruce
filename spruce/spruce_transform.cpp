@@ -10,16 +10,19 @@ namespace spruce {
 	}
 
 	void Transform::update_transform() {
-		local_matrix_ =
+		parent_to_model_ =
 			glm::translate(local_position_) *
-			glm::yawPitchRoll(local_rotation_.y, local_rotation_.x, local_rotation_.z) *
+			glm::rotate(local_orientation_.x, vec3 { 1, 0, 0 }) *
+			glm::rotate(local_orientation_.y, vec3 { 0, 1, 0 }) *
+			glm::rotate(local_orientation_.z, vec3 { 0, 0, 1 }) *
 			glm::scale(local_scale_);
 
 		if (parent_ != nullptr) {
-			world_matrix_ = local_matrix_ * parent_matrix_;
+			world_to_model_ = parent_to_model_ * world_to_parent_;
 		}
 		else {
-			world_matrix_ = local_matrix_;
+			world_to_model_ = parent_to_model_;
+			decompose_matrix(world_to_model_, world_position_, world_orientation_, world_scale_);
 		}
 
 		object_->transform_changed();
@@ -27,14 +30,14 @@ namespace spruce {
 
 	void Transform::parent_transform_changed() {
 		if (parent_ != nullptr) {
-			parent_matrix_ = parent_->world();
-			decompose_matrix(parent_matrix_, parent_position_, parent_rotation_, parent_scale_);
+			world_to_parent_ = parent_->model_matrix();
+			decompose_matrix(world_to_parent_, parent_position_, parent_orientation_, parent_scale_);
 		}
 		else {
 			parent_position_ = vec3 {};
-			parent_rotation_ = quat {};
+			parent_orientation_ = quat {};
 			parent_scale_ = vec3 { 1, 1, 1 };
-			parent_matrix_ = mat4 { 1.0f };
+			world_to_parent_ = mat4 { 1.0f };
 		}
 
 		update_transform();
