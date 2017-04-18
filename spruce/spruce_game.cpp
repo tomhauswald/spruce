@@ -32,11 +32,11 @@ namespace spruce {
 		running_ = true;
 
 		while (running_) {
+			last_frame_time = current_time;
 			current_time = glfwGetTime();
 			auto dt = static_cast<float>(glfwGetTime() - last_frame_time);
-			last_frame_time = current_time;
 
-			update(glfwGetTime() - last_frame_time);
+			update(dt);
 			draw();
 
 			running_ &= !window_->should_close();

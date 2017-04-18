@@ -8,7 +8,8 @@ namespace spruce {
 		std::string caption;
 		uint16_t width;
 		uint16_t height;
-		bool doubleBufferingEnabled;
+		bool doubleBuffered;
+		bool vsync;
 		bool resizable;
 		bool maximized;
 		bool fullscreen;

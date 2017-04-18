@@ -43,6 +43,9 @@
     <Filter Include="Source Files\engine\components">
       <UniqueIdentifier>{004f8166-0d95-4330-bf51-37034e944fae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics\2d">
+      <UniqueIdentifier>{f70377f5-696f-4f2f-82da-93f50d30d0ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spruce_opengl_window.h">
@@ -119,6 +122,21 @@
     </ClInclude>
     <ClInclude Include="spruce_textured_mesh_renderer_component.h">
       <Filter>Header Files\engine\components</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_vertex.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_sprite_renderer_component.h">
+      <Filter>Header Files\graphics\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_resource_manager.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_textures.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_programs.h">
+      <Filter>Header Files\graphics\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

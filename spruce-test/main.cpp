@@ -14,6 +14,10 @@
 #include <spruce_deferred_renderer.h>
 #include <spruce_transform.h>
 #include <spruce_textured_mesh_renderer_component.h>
+#include <spruce_sprite_renderer_component.h>
+#include <spruce_opengl_textures.h>
+#include <spruce_opengl_programs.h>
+
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -57,9 +61,9 @@ private:
 
 public:
 	bool initialize() {
-
+		
 		// Load the shader program used to render geometry to the G-buffer.
-		textured_program_ = std::make_unique<OpenGL_Program>("textured");
+		OpenGL_Programs::add("textured", std::make_unique<OpenGL_Program>("textured"));
 		{
 			OpenGL_Shader vs { OpenGL_Shader_Type::Vertex };
 			vs.compile_from_source("textured.vert");
@@ -67,11 +71,11 @@ public:
 			OpenGL_Shader fs { OpenGL_Shader_Type::Fragment };
 			fs.compile_from_source("textured.frag");
 
-			textured_program_->attach_shader(vs);
-			textured_program_->attach_shader(fs);
-			textured_program_->link();
-			textured_program_->add_uniform("uMVP");
-			textured_program_->add_uniform("uTexture");
+			OpenGL_Programs::get("textured")->attach_shader(vs);
+			OpenGL_Programs::get("textured")->attach_shader(fs);
+			OpenGL_Programs::get("textured")->link();
+			OpenGL_Programs::get("textured")->add_uniform("uMVP");
+			OpenGL_Programs::get("textured")->add_uniform("uTexture");
 		}
 
 		// Construct test mesh.
@@ -199,16 +203,20 @@ public:
 		});
 		mesh_->update();
 
-		// Load texture.
-		grass_texture_ = std::make_unique<OpenGL_Texture>();
-		grass_texture_->set_upsampling_mode(OpenGL_Sampling_Mode::Point);
-		grass_texture_->set_downsampling_mode(OpenGL_Sampling_Mode::Point, false, OpenGL_Sampling_Mode::Point);
-		grass_texture_->set_max_anisotropy(1.0f);
-		grass_texture_->upload_bitmap_data(Bitmap { "grass.png" });
+		OpenGL_Textures::add("grass", std::make_unique<OpenGL_Texture>());
+		OpenGL_Textures::get("grass")->set_upsampling_mode(OpenGL_Sampling_Mode::Point);
+		OpenGL_Textures::get("grass")->set_downsampling_mode(OpenGL_Sampling_Mode::Point, false, OpenGL_Sampling_Mode::Point);
+		OpenGL_Textures::get("grass")->set_max_anisotropy(1.0f);
+		OpenGL_Textures::get("grass")->upload_bitmap_data(Bitmap { "grass.png" });
+
+		auto fov = 45.0f;
+		auto view = glm::lookAt(vec3{ 0, 0, -10 }, { 0, 0, 0 }, { 0, 1, 0 });
+		auto projection = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 100.0f);
 
 		// Create test object.
 		auto obj = root()->add_child("object", std::make_unique<Game_Object>());
 
+		/*
 		auto obj_renderer = (Textured_Mesh_Renderer_Component*) obj->add_component(
 			"mesh", 
 			std::make_unique<Textured_Mesh_Renderer_Component>()
@@ -218,14 +226,19 @@ public:
 		obj_renderer->set_texture_uniform_name("uTexture");
 		obj_renderer->set_mvp_uniform_name("uMVP");
 		obj_renderer->set_texture(grass_texture_.get());
-
-		auto fov = 45.0f;
-		auto view = glm::lookAt(vec3 { 0, 0, -10 }, { 0, 0, 0 }, { 0, 1, 0 });
-		auto projection = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 100.0f);
 		obj_renderer->set_view_projection_matrix(projection * view);
+		obj->add_component("demo", std::make_unique<Demo_Component>(glm::pi<float>() / 2.0f));
+		*/
 
-		//obj->transform()->set_local_yaw(glm::radians(45.0f));
-		obj->add_component("demo", std::make_unique<Demo_Component>(1000));
+		auto sprite_renderer = (Sprite_Renderer_Component*) obj->add_component(
+			"sprite_renderer", 
+			std::make_unique<Sprite_Renderer_Component>()
+		);
+		sprite_renderer->set_program(OpenGL_Programs::get("textured"));
+		sprite_renderer->set_texture_uniform_name("uTexture");
+		sprite_renderer->set_mvp_uniform_name("uMVP");
+		sprite_renderer->set_texture(OpenGL_Textures::get("grass"));
+		sprite_renderer->set_view_projection_matrix(projection * view);
 
 		return Scene::initialize();
 	}
@@ -239,7 +252,8 @@ public:
 		ws.caption = "Spruce Engine Test Application";
 		ws.width = 1280;
 		ws.height = 720;
-		ws.doubleBufferingEnabled = true;
+		ws.vsync = false;
+		ws.doubleBuffered = true;
 		ws.fullscreen = false;
 		ws.maximized = false;
 		ws.resizable = false;

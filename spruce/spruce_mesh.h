@@ -3,15 +3,16 @@
 #include "spruce_opengl_vertex_array.h"
 #include "spruce_opengl_array_buffer.h"
 #include "spruce_opengl_element_buffer.h"
+#include "spruce_vertex.h"
 
 namespace spruce {
 
 	template<class VertexFormat>
-	class Mesh {
+	class Base_Mesh {
 	private:
 		// Vertices.
 		std::vector<VertexFormat> vertices_;
-		OpenGL_Array_Buffer vbo_;
+		Array_Buffer vbo_;
 
 		// Indices.
 		std::vector<uint16_t> indices_;
@@ -27,7 +28,7 @@ namespace spruce {
 		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) = 0;
 
 	public:
-		Mesh()
+		Base_Mesh()
 			: vbo_(OpenGL_Buffer_Usage::Static_Draw),
 			  ibo_(OpenGL_Buffer_Usage::Static_Draw) {
 		}
@@ -65,11 +66,7 @@ namespace spruce {
 		}
 	};
 
-	struct FSQ_Vertex {
-		fvec2 position;
-	};
-
-	class FSQ_Mesh : public Mesh<FSQ_Vertex> {
+	class FSQ_Mesh : public Base_Mesh<FSQ_Vertex> {
 	public:
 		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
 			vao.enable_attribute(0);
@@ -77,14 +74,7 @@ namespace spruce {
 		}
 	};
 
-	struct Textured_Vertex {
-		fvec3 position;
-		fvec3 normal;
-		fvec3 color;
-		fvec2 uv;
-	};
-
-	class Textured_Mesh : public Mesh<Textured_Vertex> {
+	class Textured_Mesh : public Base_Mesh<Textured_Vertex> {
 	public:
 		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
 			vao.enable_attribute(0);

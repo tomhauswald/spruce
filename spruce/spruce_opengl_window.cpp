@@ -25,7 +25,7 @@ namespace spruce {
 		// Specify window creation hints.
 		glfwWindowHint(GLFW_MAXIMIZED, window_settings.maximized);
 		glfwWindowHint(GLFW_RESIZABLE, window_settings.resizable);
-		glfwWindowHint(GLFW_DOUBLEBUFFER, window_settings.doubleBufferingEnabled);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, window_settings.doubleBuffered);
 
 		// Core profile only allowed for OpenGL >= 3.2.
 		if (context_settings.majorVersion < 3 || (context_settings.majorVersion == 3 && context_settings.minorVersion < 2)) {
@@ -74,6 +74,9 @@ namespace spruce {
 		else {
 			Log::msg.printf("Created GLFW window of size %dx%d.\n", window_settings.width, window_settings.height);
 			glfwMakeContextCurrent(window_);
+			if (window_settings.vsync) {
+				glfwSwapInterval(1);
+			}
 			Log::msg.printf("OpenGL context version: %s\n", glGetString(GL_VERSION));
 		}
 

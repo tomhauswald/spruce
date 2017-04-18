@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="spruce_deferred_renderer.h" />
+    <ClInclude Include="spruce_opengl_programs.h" />
     <ClInclude Include="spruce_renderer.h" />
     <ClInclude Include="spruce_mesh_renderer_component.h" />
     <ClInclude Include="spruce_bitmap.h" />
@@ -115,9 +116,13 @@
     <ClInclude Include="spruce_opengl_uniform.h" />
     <ClInclude Include="spruce_opengl_vertex_array.h" />
     <ClInclude Include="spruce_opengl_window.h" />
+    <ClInclude Include="spruce_resource_manager.h" />
     <ClInclude Include="spruce_scene.h" />
+    <ClInclude Include="spruce_sprite_renderer_component.h" />
     <ClInclude Include="spruce_textured_mesh_renderer_component.h" />
+    <ClInclude Include="spruce_opengl_textures.h" />
     <ClInclude Include="spruce_transform.h" />
+    <ClInclude Include="spruce_vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="spruce_bitmap.cpp" />
