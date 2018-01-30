@@ -8,84 +8,84 @@
 namespace spruce {
 
 	template<class VertexFormat>
-	class Base_Mesh {
+	class Mesh {
 	private:
 		// Vertices.
-		std::vector<VertexFormat> vertices_;
-		Array_Buffer vbo_;
+		std::vector<VertexFormat> mVertices;
+		GLArrayBuffer mVBO;
 
 		// Indices.
-		std::vector<uint16_t> indices_;
-		OpenGL_Element_Buffer ibo_;
+		std::vector<uint16_t> mIndices;
+		GLElementBuffer mIBO;
 
 		// Vertex array.
-		OpenGL_Vertex_Array vao_;
+		GLVertexArray mVAO;
 
 		// Initialization flag.
-		bool initialized_ = false;
+		bool mInitialized = false;
 
 	protected:
-		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) = 0;
+		virtual void initializeVAO(GLVertexArray& vao) = 0;
 
 	public:
-		Base_Mesh()
-			: vbo_(OpenGL_Buffer_Usage::Static_Draw),
-			  ibo_(OpenGL_Buffer_Usage::Static_Draw) {
+		Mesh() : 
+			mVBO(GLBufferUsage::StaticDraw),
+			mIBO(GLBufferUsage::StaticDraw) {
 		}
 
 		void initialize() {
-			vao_.bind();
-			vbo_.bind();
-			ibo_.bind();
-			initialize_vertex_array(vao_);
+			mVAO.bind();
+			mVBO.bind();
+			mIBO.bind();
+			initializeVAO(mVAO);
 			glUnbindVertexArray();
 			glUnbindArrayBuffer();
 			glUnbindElementBuffer();
-			initialized_ = true;
+			mInitialized = true;
 		}
 
-		inline std::vector<VertexFormat>& vertices() { return vertices_; }
-		inline std::vector<VertexFormat> const& vertices() const { return vertices_; }
+		inline std::vector<VertexFormat>& getVertices() { return mVertices; }
+		inline std::vector<VertexFormat> const& getVertices() const { return mVertices; }
 
-		inline std::vector<uint16_t>& indices() { return indices_; }
-		inline std::vector<uint16_t> const& indices() const { return indices_; }
+		inline std::vector<uint16_t>& getIndices() { return mIndices; }
+		inline std::vector<uint16_t> const& getIndices() const { return mIndices; }
 
-		inline OpenGL_Vertex_Array& vertex_array() { return vao_; }
+		inline GLVertexArray& getVAO() { return mVAO; }
 
 		// Upload updated vertex and index data to GPU.
-		void update() {
-			panic_if(!initialized_, "Trying to update uninitialized mesh.");
+		void updateMeshData() {
+			panic_if(!mInitialized, "Trying to update uninitialized mesh.");
 
-			vbo_.bind();
-			vbo_.buffer(vertices_.size() * sizeof(VertexFormat), &vertices_[0]);
+			mVBO.bind();
+			mVBO.buffer(mVertices.size() * sizeof(VertexFormat), &mVertices[0]);
 			glUnbindArrayBuffer();
 
-			ibo_.bind();
-			ibo_.buffer(indices_.size() * sizeof(uint16_t), &indices_[0]);
+			mIBO.bind();
+			mIBO.buffer(mIndices.size() * sizeof(uint16_t), &mIndices[0]);
 			glUnbindElementBuffer();
 		}
 	};
 
-	class FSQ_Mesh : public Base_Mesh<FSQ_Vertex> {
+	class FSQMesh : public Mesh<FSQVertex> {
 	public:
-		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
-			vao.enable_attribute(0);
-			vao.store_fvec2_attribute(0);
+		virtual void initializeVAO(GLVertexArray& vao) override {
+			vao.enableAttributeSlot(0);
+			vao.storeFvec2Attribute(0);
 		}
 	};
 
-	class Textured_Mesh : public Base_Mesh<Textured_Vertex> {
+	class TexturedMesh : public Mesh<TexturedVertex> {
 	public:
-		virtual void initialize_vertex_array(OpenGL_Vertex_Array& vao) {
-			vao.enable_attribute(0);
-			vao.enable_attribute(1);
-			vao.enable_attribute(2);
-			vao.enable_attribute(3);
+		virtual void initializeVAO(GLVertexArray& vao) {
+			vao.enableAttributeSlot(0);
+			vao.enableAttributeSlot(1);
+			vao.enableAttributeSlot(2);
+			vao.enableAttributeSlot(3);
 
-			vao.store_fvec3_attribute(0, sizeof(Textured_Vertex), 0 * sizeof(fvec3));
-			vao.store_fvec3_attribute(1, sizeof(Textured_Vertex), 1 * sizeof(fvec3));
-			vao.store_fvec3_attribute(2, sizeof(Textured_Vertex), 2 * sizeof(fvec3));
-			vao.store_fvec2_attribute(3, sizeof(Textured_Vertex), 3 * sizeof(fvec3));
+			vao.storeFvec3Attribute(0, sizeof(TexturedVertex), 0 * sizeof(fvec3)); // Position
+			vao.storeFvec3Attribute(1, sizeof(TexturedVertex), 1 * sizeof(fvec3)); // Normal
+			vao.storeFvec3Attribute(2, sizeof(TexturedVertex), 2 * sizeof(fvec3)); // Color
+			vao.storeFvec2Attribute(3, sizeof(TexturedVertex), 3 * sizeof(fvec3)); // UV
 		}
 	};
 }

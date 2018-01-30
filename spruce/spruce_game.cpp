@@ -3,43 +3,40 @@
 namespace spruce {
 
 	bool Game::initialize() {
-		panic_if(window_ == nullptr,   "Window must be specified.");
-		panic_if(renderer_ == nullptr, "Renderer must be specified.");
+		panic_if(mWindow == nullptr,   "Window must be specified.");
+		panic_if(mRenderer == nullptr, "Renderer must be specified.");
 		return true;
 	}
 
 	void Game::update(float dt) {
-		window_->poll_events();
-		active_scene()->root()->update(dt);
+		mWindow->pollEvents();
+		getActiveScene().getRoot().update(dt);
 	}
 
 	void Game::draw() {
-		window_->clear_buffer({ 0.0f, 0.0f, 0.0f });
-
-		if (renderer_) {
-			renderer_->render(active_scene());
-		}
-
-		window_->swap_buffers();
+		mWindow->clear({ 0.0f, 0.0f, 0.0f });
+		mRenderer->renderScene(getActiveScene());
+		mWindow->swapBuffers();
 	}
 
-	void Game::run() {
-		static double current_time = glfwGetTime();
-		static double last_frame_time = glfwGetTime();
+	void Game::run(std::string startSceneName) {
+		static double currentTime = glfwGetTime();
+		static double lastFrameTime = glfwGetTime();
 
+		mActiveSceneName = startSceneName;
 		panic_if(!initialize(), "Game initialization failed.");
-		panic_if(!active_scene()->initialize(), "Initialization of start scene failed.");
-		running_ = true;
+		panic_if(!mScenes[startSceneName]->initialize(), "Initialization of start scene failed.");
+		mRunning = true;
 
-		while (running_) {
-			last_frame_time = current_time;
-			current_time = glfwGetTime();
-			auto dt = static_cast<float>(glfwGetTime() - last_frame_time);
+		while (mRunning) {
+			lastFrameTime = currentTime;
+			currentTime = glfwGetTime();
+			auto dt = static_cast<float>(glfwGetTime() - lastFrameTime);
 
 			update(dt);
 			draw();
 
-			running_ &= !window_->should_close();
+			mRunning &= !mWindow->isCloseRequested();
 		}
 	}
 }

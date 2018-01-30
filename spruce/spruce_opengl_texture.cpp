@@ -1,114 +1,117 @@
 #include "spruce_opengl_texture.h"
 
-spruce::OpenGL_Texture::OpenGL_Texture()
-	: OpenGL_Item(OpenGL_Item_Type::Texture, glGenTexture()) {
-	set_downsampling_mode(OpenGL_Sampling_Mode::Lerp, false, OpenGL_Sampling_Mode::Lerp);
-	set_upsampling_mode(OpenGL_Sampling_Mode::Lerp);
-}
+namespace spruce {
 
-#define OPENGL_TEXTURE_MIPMAPS
-void spruce::OpenGL_Texture::upload_bitmap_data(Bitmap const& bmp) {
-	panic_if(bmp.data() == nullptr, "Trying to upload initialized bitmap to GPU.");
-	
-	// Generate texture mipmaps.
-	glBindTexture(GL_TEXTURE_2D, id_);
-	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-	glTexImage2D(
-		GL_TEXTURE_2D, 
-		0,
-		GL_RGBA,
-		(GLsizei) bmp.width(),
-		(GLsizei) bmp.height(),
-		0,
-		GL_RGBA,
-		GL_UNSIGNED_BYTE,
-		(GLvoid const*) bmp.data()
-	);
+	GLTexture::GLTexture() : 
+		GLItem(GLItemType::Texture, glGenTexture()) {
+		setDownsamplingMode(GLSamplingMode::Lerp, false, GLSamplingMode::Lerp);
+		setUpsamplingMode(GLSamplingMode::Lerp);
+	}
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-}
+	#define OPENGL_TEXTURE_MIPMAPS
+	void GLTexture::uploadBitmap(Bitmap const& bmp) {
+		panic_if(bmp.getPixelData() == nullptr, "Trying to upload initialized bitmap to GPU.");
 
-void spruce::OpenGL_Texture::set_downsampling_mode(OpenGL_Sampling_Mode localMode, bool useMipmaps, OpenGL_Sampling_Mode mipmapMode) {
-	glBindTexture(GL_TEXTURE_2D, id_);
+		// Generate texture mipmaps.
+		glBindTexture(GL_TEXTURE_2D, mGLId);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RGBA,
+			(GLsizei) bmp.getWidth(),
+			(GLsizei) bmp.getHeight(),
+			0,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			(GLvoid const*) bmp.getPixelData()
+		);
 
-	// Mipmaps enabled.
-	if (useMipmaps) {
-		switch (localMode)
-		{
-			// Use nearest pixel inside mip-level.
-			case OpenGL_Sampling_Mode::Point:
-			switch (mipmapMode)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	}
+
+	void GLTexture::setDownsamplingMode(GLSamplingMode localMode, bool useMipmaps, GLSamplingMode mipmapMode) {
+		glBindTexture(GL_TEXTURE_2D, mGLId);
+
+		// Mipmaps enabled.
+		if (useMipmaps) {
+			switch (localMode)
 			{
-				// Use nearest mip-level.
-				case OpenGL_Sampling_Mode::Point:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+				// Use nearest pixel inside mip-level.
+				case GLSamplingMode::Point:
+				switch (mipmapMode)
+				{
+					// Use nearest mip-level.
+					case GLSamplingMode::Point:
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+					break;
+
+					// Lerp between mip-levels.
+					case GLSamplingMode::Lerp:
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+					break;
+				}
 				break;
 
-				// Lerp between mip-levels.
-				case OpenGL_Sampling_Mode::Lerp:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+				// Lerp between pixels inside mip-level.
+				case GLSamplingMode::Lerp:
+				switch (mipmapMode)
+				{
+					// Use nearest mip-level.
+					case GLSamplingMode::Point:
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+					break;
+
+					// Lerp between mip-levels.
+					case GLSamplingMode::Lerp:
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+					break;
+				}
 				break;
 			}
+		}
+
+		// Mipmaps disabled.
+		else {
+			switch (localMode)
+			{
+				// Use nearest pixel in mip-level 0.
+				case GLSamplingMode::Point:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				break;
+
+				// Lerp between pixels in mip-level 0.
+				case GLSamplingMode::Lerp:
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				break;
+			}
+		}
+	}
+
+	void GLTexture::setUpsamplingMode(GLSamplingMode localMode) {
+		glBindTexture(GL_TEXTURE_2D, mGLId);
+
+		switch (localMode) {
+			case GLSamplingMode::Point:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			break;
 
-			// Lerp between pixels inside mip-level.
-			case OpenGL_Sampling_Mode::Lerp:
-			switch (mipmapMode)
-			{
-				// Use nearest mip-level.
-				case OpenGL_Sampling_Mode::Point:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-				break;
-
-				// Lerp between mip-levels.
-				case OpenGL_Sampling_Mode::Lerp:
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-				break;
-			}
+			case GLSamplingMode::Lerp:
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			break;
 		}
 	}
 
-	// Mipmaps disabled.
-	else {
-		switch (localMode)
-		{
-			// Use nearest pixel in mip-level 0.
-			case OpenGL_Sampling_Mode::Point:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			break;
-
-			// Lerp between pixels in mip-level 0.
-			case OpenGL_Sampling_Mode::Lerp:
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			break;
-		}
+	void GLTexture::setMaxAnisotropy(float max) {
+		float maxSupportedAnisotropy;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxSupportedAnisotropy);
+		panic_if(max < 1.0f || max > maxSupportedAnisotropy, "Unsupported value of max anisotropy.");
+		glBindTexture(GL_TEXTURE_2D, mGLId);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
 	}
-}
 
-void spruce::OpenGL_Texture::set_upsampling_mode(OpenGL_Sampling_Mode localMode) {
-	glBindTexture(GL_TEXTURE_2D, id_);
-	
-	switch (localMode) {
-		case OpenGL_Sampling_Mode::Point:
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		break;
-
-		case OpenGL_Sampling_Mode::Lerp:
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		break;
+	GLTexture::~GLTexture() {
+		glDeleteTexture(mGLId);
 	}
-}
-
-void spruce::OpenGL_Texture::set_max_anisotropy(float max) {
-	float maxSupportedAnisotropy;
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxSupportedAnisotropy);
-	panic_if(max < 1.0f || max > maxSupportedAnisotropy, "Unsupported value of max anisotropy.");
-	glBindTexture(GL_TEXTURE_2D, id_);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max);
-}
-
-spruce::OpenGL_Texture::~OpenGL_Texture() {
-	glDeleteTexture(id_);
 }

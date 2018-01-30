@@ -8,64 +8,64 @@
 #include <unordered_map>
 
 namespace spruce {
-	class OpenGL_Program : public OpenGL_Item {
+	class GLShaderProgram : public GLItem {
 	private:
-		std::string name_;
-		std::unordered_map<std::string, std::unique_ptr<OpenGL_Uniform>> uniforms_;
+		std::string mName;
+		std::unordered_map<std::string, std::unique_ptr<GLUniformVar>> mUniformVars;
 
 	public:
-		OpenGL_Program(std::string const& name)
-			: OpenGL_Item(OpenGL_Item_Type::Program, glCreateProgram()),
-			  name_(name) {
+		GLShaderProgram(std::string name)
+			: GLItem(GLItemType::ShaderProgram, glCreateProgram()),
+			  mName(name) {
 		}
 
-		inline void attach_shader(OpenGL_Shader const& shader) {
-			glAttachShader(id_, shader.id());
+		inline void addShader(GLShader& shader) {
+			glAttachShader(mGLId, shader.getGLId());
 		}
 
-		inline void detach_shader(OpenGL_Shader const& shader) {
-			glDetachShader(id_, shader.id());
+		inline void removeShader(GLShader& shader) {
+			glDetachShader(mGLId, shader.getGLId());
 		}
 
 		inline void link() {
-			glLinkProgram(id_);
+			glLinkProgram(mGLId);
 
 			int linkResult;
-			glGetProgramiv(id_, GL_LINK_STATUS, &linkResult);
+			glGetProgramiv(mGLId, GL_LINK_STATUS, &linkResult);
 
 			if (linkResult != GL_TRUE) {
-				Log::err << "Failed to link program '" << name_ << "'. Reason:\n";
+				Log::err << "Failed to link program '" << mName << "'. Reason:\n";
 				int messageLen;
-				glGetProgramiv(id_, GL_INFO_LOG_LENGTH, &messageLen);
+				glGetProgramiv(mGLId, GL_INFO_LOG_LENGTH, &messageLen);
 				if (messageLen > 0) {
 					auto buffer = std::make_unique<char[]>(messageLen);
-					glGetProgramInfoLog(id_, messageLen, nullptr, buffer.get());
+					glGetProgramInfoLog(mGLId, messageLen, nullptr, buffer.get());
 					Log::msg << buffer.get() << "\n";
 				}
 			}
 			else {
-				Log::msg << "Successfully linked program '" << name_ << "'.\n";
+				Log::msg << "Successfully linked program '" << mName << "'.\n";
 			}
 		}
 
-		inline OpenGL_Uniform& add_uniform(std::string const& name) {
-			return *(uniforms_[name] = std::make_unique<OpenGL_Uniform>(id_, name)).get();
+		inline GLUniformVar& addUniformVar(std::string name) {
+			return *(mUniformVars[name] = std::make_unique<GLUniformVar>(mGLId, name)).get();
 		}
 
-		inline OpenGL_Uniform* uniform(std::string const& name) {
-			return uniforms_.count(name) > 0 ? uniforms_.at(name).get() : nullptr;
+		inline GLUniformVar& getUniformVar(std::string const& name) {
+			return *mUniformVars.at(name).get();
 		}
 
-		inline OpenGL_Uniform const* uniform(std::string const& name) const {
-			return uniforms_.count(name) > 0 ? uniforms_.at(name).get() : nullptr;
+		inline void use() { 
+			glUseProgram(mGLId); 
 		}
 
-		inline void use() { glUseProgram(id_); }
+		inline std::string const& name() const { 
+			return mName; 
+		}
 
-		inline std::string const& name() const { return name_; }
-
-		~OpenGL_Program() {
-			glDeleteProgram(id_);
+		~GLShaderProgram() {
+			glDeleteProgram(mGLId);
 		}
 	};
 }

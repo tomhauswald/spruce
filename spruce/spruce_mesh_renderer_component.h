@@ -4,37 +4,47 @@
 #include "spruce_mesh.h"
 #include "spruce_opengl_texture.h"
 #include "spruce_opengl_program.h"
-#include "spruce_game_object.h"
+#include "spruce_entity.h"
 
 namespace spruce {
 
 	template<class MeshType>
-	class Mesh_Renderer_Component : public Component {
+	class MeshRendererComponent : public Component {
 	private:
-		MeshType* mesh_;
-		OpenGL_Program* program_;
-		mat4 view_projection_matrix_;
-		std::string mvp_uniform_name_;
-
-	protected:
-		virtual bool prepare(OpenGL_Program* program) { return true; }
+		MeshType* mMesh;
+		GLShaderProgram* mShaderProgram;
+		mat4 mViewProjMat;
+		std::string mMVPUniformName;
 
 	public:
-		inline void set_mesh(MeshType* mesh) { mesh_ = mesh; }
-		inline void set_program(OpenGL_Program* program) { program_ = program; }
-		inline void set_view_projection_matrix(mat4 const& matrix) { view_projection_matrix_ = matrix; }
-		inline void set_mvp_uniform_name(std::string const& name) { mvp_uniform_name_ = name; }
+		inline GLShaderProgram& getShaderProgram() {
+			return *mShaderProgram;
+		}
 
-		void draw() override {
-			if (program_ && mesh_) {
-				program_->use();
-				program_->uniform(mvp_uniform_name_)->store(view_projection_matrix_ * owner_->transform()->model_matrix());
+		inline void setMesh(MeshType* mesh) { 
+			mMesh = mesh; 
+		}
 
-				if (prepare(program_)) {
-					mesh_->vertex_array().bind();
-					glDrawElements(GL_TRIANGLES, mesh_->indices().size(), GL_UNSIGNED_SHORT, nullptr);
-					glUnbindVertexArray();
-				}
+		inline void setShaderProgram(GLShaderProgram& program) {
+			mShaderProgram = &program; 
+		}
+
+		inline void setViewProjMat(mat4 matrix) { 
+			mViewProjMat = matrix; 
+		}
+
+		inline void setMVPUniformName(std::string name) {
+			mMVPUniformName = name;
+		}
+
+		virtual void draw() override {
+			if (mShaderProgram != nullptr && mMesh != nullptr) {
+				mShaderProgram->use();
+				mShaderProgram->getUniformVar(mMVPUniformName).store(mViewProjMat * mOwner->getTransform().getModelMatrix());
+
+				mMesh->getVAO().bind();
+				glDrawElements(GL_TRIANGLES, mMesh->getIndices().size(), GL_UNSIGNED_SHORT, nullptr);
+				glUnbindVertexArray();
 			}
 		}
 	};

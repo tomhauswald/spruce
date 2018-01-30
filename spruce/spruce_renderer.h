@@ -1,34 +1,37 @@
 #pragma once
 
 #include "spruce_graphics.h"
+#include "spruce_opengl_window.h"
 
 namespace spruce {
+
 	class Scene;
 	class Renderer;
 
-	class Render_Pass {
+	class RenderPass {
 	protected:
-		Renderer* renderer_;
+		Renderer& mRenderer;
 		
 	public:
-		Render_Pass(Renderer* renderer) : renderer_(renderer) {}
-		virtual void render(Scene* scene) = 0;
+		RenderPass(Renderer& renderer) : 
+			mRenderer(renderer) {
+		}
+
+		virtual void renderScene(Scene& scene) = 0;
 	};
 
 	class Game;
+
 	class Renderer {
 	protected:
-		Game* game_;
-		std::vector<std::unique_ptr<Render_Pass>> passes_;
+		std::vector<std::unique_ptr<RenderPass>> mRenderPasses;
 
 	public:
-		Renderer(Game* game) : game_(game) { }
+		virtual bool initialize(GLWindow const& window) = 0;
 
-		virtual bool initialize() = 0;
-
-		inline void render(Scene* scene) {
-			for (auto& pass : passes_) {
-				pass->render(scene);
+		inline void renderScene(Scene& scene) {
+			for (auto& pass : mRenderPasses) {
+				pass->renderScene(scene);
 			}
 		}
 	};

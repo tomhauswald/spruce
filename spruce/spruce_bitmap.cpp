@@ -6,53 +6,55 @@
 
 namespace spruce {
 
-	void Bitmap::release_current_data() {
-		if (data_ != nullptr) {
-			free(data_);
-			data_ = nullptr;
-		}
+	Bitmap::Bitmap() : 
+		mWidth(0),
+		mHeight(0),
+		mPixelData(nullptr) {
 	}
 
-	Bitmap::Bitmap()
-		: width_(0),
-		height_(0),
-		data_(nullptr) {}
-
-	Bitmap::Bitmap(uint16_t width, uint16_t height)
-		: width_(width),
-		height_(height) {
+	Bitmap::Bitmap(uint16_t width, uint16_t height) : 
+		mWidth(width),
+		mHeight(height) {
 
 		auto sizeInBytes = width * height * 4;
-		data_ = static_cast<uint8_t*> (malloc(sizeInBytes));
-		memset(data_, 0, sizeInBytes);
+		mPixelData = static_cast<uint8_t*> (malloc(sizeInBytes));
+		memset(mPixelData, 0, sizeInBytes);
 	}
 
-	Bitmap::Bitmap(std::string const& filename)
-		: width_(0),
-		height_(0),
-		data_(nullptr) {
+	Bitmap::Bitmap(std::string const& filename) : 
+		mWidth(0),
+		mHeight(0),
+		mPixelData(nullptr) {
 		panic_if(
-			!load_from_file(filename), 
+			!loadFromFile(filename), 
 			"Failed to load bitmap from file: '" + filename + "'."
 		);
 	}
 
-	bool Bitmap::load_from_file(std::string const& filename) {
-		release_current_data();
+	void Bitmap::releasePixelData() {
+		if (mPixelData != nullptr) {
+			free(mPixelData);
+			mPixelData = nullptr;
+		}
+	}
+
+	bool Bitmap::loadFromFile(std::string const& filename) {
+		releasePixelData();
 
 		int w, h, channels;
-		data_ = stbi_load(filename.c_str(), &w, &h, &channels, 4);
+		mPixelData = stbi_load(filename.c_str(), &w, &h, &channels, 4);
 
-		if (data_ != nullptr) {
+		if (mPixelData != nullptr) {
 			if (w > 0 && h > 0 && channels > 0) {
-				width_ = static_cast<uint16_t>(w);
-				height_ = static_cast<uint16_t>(h);
+				mWidth = static_cast<uint16_t>(w);
+				mHeight = static_cast<uint16_t>(h);
 				return true;
 			}
 			else {
-				release_current_data();
-				return false;
+				releasePixelData();
 			}
 		}
+
+		return false;
 	}
 }

@@ -16,9 +16,6 @@
     <Filter Include="Header Files\graphics">
       <UniqueIdentifier>{355c5b9d-8827-408f-a94d-3721d37f92d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\graphics\opengl">
-      <UniqueIdentifier>{1276c047-a469-43b2-aaa0-04e04a5c35e2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\graphics">
       <UniqueIdentifier>{b241fc66-986b-4805-a9fc-f8933a92e6ce}</UniqueIdentifier>
     </Filter>
@@ -46,16 +43,16 @@
     <Filter Include="Header Files\graphics\2d">
       <UniqueIdentifier>{f70377f5-696f-4f2f-82da-93f50d30d0ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\graphics\3d">
+      <UniqueIdentifier>{1276c047-a469-43b2-aaa0-04e04a5c35e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics\3d\OpenGL">
+      <UniqueIdentifier>{b7e2e6e2-dc43-42d6-9d2e-521abd12ab7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="spruce_opengl_window.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
     <ClInclude Include="spruce_log.h">
       <Filter>Header Files\misc</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_texture.h">
-      <Filter>Header Files\graphics\opengl</Filter>
     </ClInclude>
     <ClInclude Include="spruce_common.h">
       <Filter>Header Files</Filter>
@@ -63,43 +60,13 @@
     <ClInclude Include="spruce_graphics.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_item.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_vertex_array.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_buffer.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_array_buffer.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_element_buffer.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_program.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_shader.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
     <ClInclude Include="spruce_mesh.h">
       <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_uniform.h">
-      <Filter>Header Files\graphics\opengl</Filter>
     </ClInclude>
     <ClInclude Include="spruce_bitmap.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_frame_buffer.h">
-      <Filter>Header Files\graphics\opengl</Filter>
-    </ClInclude>
     <ClInclude Include="spruce_game.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_game_object.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="spruce_scene.h">
@@ -110,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="spruce_renderer.h">
       <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_component.h">
-      <Filter>Header Files\engine\components</Filter>
     </ClInclude>
     <ClInclude Include="spruce_mesh_renderer_component.h">
       <Filter>Header Files\engine\components</Filter>
@@ -135,8 +99,47 @@
     <ClInclude Include="spruce_opengl_textures.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_programs.h">
-      <Filter>Header Files\graphics\opengl</Filter>
+    <ClInclude Include="spruce_component.h">
+      <Filter>Header Files\engine\components</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_entity.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_array_buffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_buffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_element_buffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_frame_buffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_item.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_program.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_shader.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_texture.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_uniform.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_vertex_array.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_window.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="spruce_opengl_program_manager.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +167,6 @@
     <ClCompile Include="spruce_game.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_game_object.cpp">
-      <Filter>Source Files\engine</Filter>
-    </ClCompile>
     <ClCompile Include="spruce_deferred_renderer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -175,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="spruce_textured_mesh_renderer_component.cc">
       <Filter>Source Files\engine\components</Filter>
+    </ClCompile>
+    <ClCompile Include="spruce_entity.cpp">
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

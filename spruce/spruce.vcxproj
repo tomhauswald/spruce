@@ -78,6 +78,8 @@
       <CppLanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">c++1y</CppLanguageStandard>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp17</LanguageStandard>
+      <EnableModules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</EnableModules>
     </ClCompile>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glew32s.lib;glfw3.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -94,13 +96,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="spruce_deferred_renderer.h" />
-    <ClInclude Include="spruce_opengl_programs.h" />
+    <ClInclude Include="spruce_opengl_program_manager.h" />
     <ClInclude Include="spruce_renderer.h" />
     <ClInclude Include="spruce_mesh_renderer_component.h" />
     <ClInclude Include="spruce_bitmap.h" />
     <ClInclude Include="spruce_component.h" />
     <ClInclude Include="spruce_game.h" />
-    <ClInclude Include="spruce_game_object.h" />
+    <ClInclude Include="spruce_entity.h" />
     <ClInclude Include="spruce_mesh.h" />
     <ClInclude Include="spruce_common.h" />
     <ClInclude Include="spruce_graphics.h" />
@@ -129,7 +131,7 @@
     <ClCompile Include="spruce_common.cpp" />
     <ClCompile Include="spruce_deferred_renderer.cpp" />
     <ClCompile Include="spruce_game.cpp" />
-    <ClCompile Include="spruce_game_object.cpp" />
+    <ClCompile Include="spruce_entity.cpp" />
     <ClCompile Include="spruce_log.cpp" />
     <ClCompile Include="spruce_textured_mesh_renderer_component.cc" />
     <ClCompile Include="spruce_opengl_frame_buffer.cpp" />

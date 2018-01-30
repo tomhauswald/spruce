@@ -1,23 +1,49 @@
 #pragma once
 
 #include "spruce_common.h"
+#include <optional>
 
 namespace spruce {
-	class Game_Object;
+
+	class Entity;
 
 	class Component {
+
 	protected:
-		Game_Object* owner_;
+		std::string mName;
+		Entity* mOwner;
 
 	public:
-		Component() = default;
-		Component(Game_Object* owner) : owner_(owner) {}
-		inline Game_Object* owner() { return owner_; }
-		inline Game_Object const* owner() const { return owner_; }
-		inline void set_owner(Game_Object* owner) { owner_ = owner; }
+		Component() 
+			: mName("unnamed"),
+			  mOwner(nullptr) { 
+		};
 
-		virtual bool initialize() { return true; }
-		virtual void update(float dt) { };
-		virtual void draw() { };
+		Component(Entity* owner, std::string name)
+			: mName(name),
+			  mOwner(owner) { 
+		}
+
+		inline std::string const& getName() { 
+			return mName; 
+		}
+
+		inline Entity& getOwner() {
+			return *mOwner; 
+		}
+		
+		inline void setOwner(Entity& owner) {
+			mOwner = &owner; 
+		}
+
+		virtual bool initialize() {
+			return true;
+		}
+
+		virtual void update(float dt) {
+		}
+
+		virtual void draw() {
+		}
 	};
 }

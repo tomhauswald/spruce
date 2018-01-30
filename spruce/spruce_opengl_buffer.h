@@ -4,102 +4,102 @@
 
 namespace spruce {
 
-	enum class OpenGL_Buffer_Usage {
-		Static_Read,
-		Static_Copy,
-		Static_Draw,
+	enum class GLBufferUsage {
+		StaticRead,
+		StaticCopy,
+		StaticDraw,
 
-		Dynamic_Read,
-		Dynamic_Copy,
-		Dynamic_Draw,
+		DynamicRead,
+		DynamicCopy,
+		DynamicDraw,
 
-		Stream_Read,
-		Stream_Copy,
-		Stream_Draw
+		StreamRead,
+		StreamCopy,
+		StreamDraw
 	};
 
-	enum class OpenGL_Buffer_Type {
+	enum class GLBufferType {
 		Array,
 		Element
 	};
 
-	class OpenGL_Buffer : public OpenGL_Item {
+	class GLBuffer : public GLItem {
 	private:
-		OpenGL_Buffer_Type bufferType_;
-		GLenum glBufferTarget_;
+		GLBufferType mBufferType;
+		GLenum mGLBufferTarget;
 
-		OpenGL_Buffer_Usage bufferUsage_;
-		GLenum glBufferUsage_;
+		GLBufferUsage mBufferUsage;
+		GLenum mGLBufferUsage;
 
 	public:
-		OpenGL_Buffer(OpenGL_Buffer_Type type, OpenGL_Buffer_Usage usage)
-			: OpenGL_Item(OpenGL_Item_Type::Buffer, glGenBuffer()),
-			  bufferType_(type),
-			  bufferUsage_(usage) {
+		GLBuffer(GLBufferType type, GLBufferUsage usage)
+			: GLItem(GLItemType::Buffer, glGenBuffer()),
+			  mBufferType(type),
+			  mBufferUsage(usage) {
 			
 			// Map to OpenGL buffer target.
-			switch (bufferType_) {
-				case OpenGL_Buffer_Type::Array:
-				glBufferTarget_ = GL_ARRAY_BUFFER;
+			switch (mBufferType) {
+				case GLBufferType::Array:
+				mGLBufferTarget = GL_ARRAY_BUFFER;
 				break;
 
-				case OpenGL_Buffer_Type::Element:
-				glBufferTarget_ = GL_ELEMENT_ARRAY_BUFFER;
+				case GLBufferType::Element:
+				mGLBufferTarget = GL_ELEMENT_ARRAY_BUFFER;
 				break;
 			}
 
 			// Map to OpenGL buffer usage.
-			switch (bufferUsage_) {
-				case OpenGL_Buffer_Usage::Static_Read:
-				glBufferUsage_ = GL_STATIC_READ;
+			switch (mBufferUsage) {
+				case GLBufferUsage::StaticRead:
+				mGLBufferUsage = GL_STATIC_READ;
 				break;
 
-				case OpenGL_Buffer_Usage::Static_Copy:
-				glBufferUsage_ = GL_STATIC_COPY;
+				case GLBufferUsage::StaticCopy:
+				mGLBufferUsage = GL_STATIC_COPY;
 				break;
 
-				case OpenGL_Buffer_Usage::Static_Draw:
-				glBufferUsage_ = GL_STATIC_DRAW;
+				case GLBufferUsage::StaticDraw:
+				mGLBufferUsage = GL_STATIC_DRAW;
 				break;
 
-				case OpenGL_Buffer_Usage::Dynamic_Read:
-				glBufferUsage_ = GL_DYNAMIC_READ;
+				case GLBufferUsage::DynamicRead:
+				mGLBufferUsage = GL_DYNAMIC_READ;
 				break;
 
-				case OpenGL_Buffer_Usage::Dynamic_Copy:
-				glBufferUsage_ = GL_DYNAMIC_COPY;
+				case GLBufferUsage::DynamicCopy:
+				mGLBufferUsage = GL_DYNAMIC_COPY;
 				break;
 
-				case OpenGL_Buffer_Usage::Dynamic_Draw:
-				glBufferUsage_ = GL_DYNAMIC_DRAW;
+				case GLBufferUsage::DynamicDraw:
+				mGLBufferUsage = GL_DYNAMIC_DRAW;
 				break;
 
-				case OpenGL_Buffer_Usage::Stream_Read:
-				glBufferUsage_ = GL_STREAM_READ;
+				case GLBufferUsage::StreamRead:
+				mGLBufferUsage = GL_STREAM_READ;
 				break;
 
-				case OpenGL_Buffer_Usage::Stream_Copy:
-				glBufferUsage_ = GL_STREAM_COPY;
+				case GLBufferUsage::StreamCopy:
+				mGLBufferUsage = GL_STREAM_COPY;
 				break;
 
-				case OpenGL_Buffer_Usage::Stream_Draw:
-				glBufferUsage_ = GL_STREAM_DRAW;
+				case GLBufferUsage::StreamDraw:
+				mGLBufferUsage = GL_STREAM_DRAW;
 				break;
 			}
 		}
 
-		~OpenGL_Buffer() {
-			glDeleteBuffer(id_);
+		~GLBuffer() {
+			glDeleteBuffer(mGLId);
 		}
 
 		void bind() {
-			glBindBuffer(glBufferTarget_, id_);
+			glBindBuffer(mGLBufferTarget, mGLId);
 		}
 
 		void buffer(uint32_t sizeInBytes, void const* data) {
-			glBufferData(glBufferTarget_, static_cast<GLsizeiptr>(sizeInBytes), data, glBufferUsage_);
+			glBufferData(mGLBufferTarget, static_cast<GLsizeiptr>(sizeInBytes), data, mGLBufferUsage);
 		}
 
-		inline OpenGL_Buffer_Type bufferType() const { return bufferType_; }
+		inline GLBufferType getBufferType() const { return mBufferType; }
 	};
 }

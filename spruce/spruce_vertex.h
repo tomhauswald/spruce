@@ -4,11 +4,11 @@
 
 namespace spruce {
 
-	struct FSQ_Vertex {
+	struct FSQVertex {
 		fvec2 position;
 	};
 
-	struct Textured_Vertex {
+	struct TexturedVertex {
 		fvec3 position;
 		fvec3 normal;
 		fvec3 color;

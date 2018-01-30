@@ -1,26 +1,33 @@
 #pragma once
 
-#include "spruce_game_object.h"
+#include "spruce_entity.h"
 
 namespace spruce {
+
 	class Game;
+
 	class Scene {
 	private:
-		std::unique_ptr<Game_Object> root_;
-		Game* game_;
+		std::unique_ptr<Entity> mRoot;
+		Game& mGame;
 
 	public:
-		Scene() {
-			root_ = std::make_unique<Game_Object>();
-			root_->set_scene(this);
+		Scene(Game& game) :
+			mGame(game) {
+			mRoot = std::make_unique<Entity>();
+			mRoot->setParentScene(*this);
 		}
 
-		virtual bool initialize() { return root_->initialize(); }
+		virtual bool initialize() { 
+			return mRoot->initialize(); 
+		}
 
-		inline Game_Object* root() { return root_.get(); }
+		inline Entity& getRoot() { 
+			return *mRoot.get(); 
+		}
 
-		inline Game* game() { return game_; }
-
-		inline void set_game(Game* game) { game_ = game; }
+		inline Game& getGame() { 
+			return mGame; 
+		}
 	};
 }

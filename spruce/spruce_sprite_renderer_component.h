@@ -4,53 +4,58 @@
 #include "spruce_opengl_textures.h"
 
 namespace spruce {
-	class Sprite_Renderer_Component : public Textured_Mesh_Renderer_Component {
+	class SpriteRendererComponent : public TxrMeshRendererComponent {
 	private:
-		std::unique_ptr<Textured_Mesh> mesh_;
+		static std::unique_ptr<TexturedMesh> sQuadMesh;
 
 	public:
-		Sprite_Renderer_Component() {
-			mesh_ = std::make_unique<Textured_Mesh>();
-			mesh_->initialize();
+		SpriteRendererComponent() {
+			if (sQuadMesh == nullptr) {
+				sQuadMesh = std::make_unique<TexturedMesh>();
+				sQuadMesh->initialize();
 
-			auto& vertices = mesh_->vertices();
+				auto& vertices = sQuadMesh->getVertices();
 
-			vertices.push_back({
-				{ 0.5f, 0.5f, -0.5f },
-				{ 0, 0, -1 },
-				{ 1, 1, 0 },
-				{ 0, 0 }
-			});
+				vertices.push_back({
+					{ 0.5f, 0.5f, -0.5f },
+					{ 0, 0, -1 },
+					{ 1, 1, 0 },
+					{ 0, 0 }
+				});
 
-			vertices.push_back({
-				{ 0.5f, -0.5f, -0.5f },
-				{ 0, 0, -1 },
-				{ 1, 1, 0 },
-				{ 0, 1 }
-			});
+				vertices.push_back({
+					{ 0.5f, -0.5f, -0.5f },
+					{ 0, 0, -1 },
+					{ 1, 1, 0 },
+					{ 0, 1 }
+				});
 
-			vertices.push_back({
-				{ -0.5f, -0.5f, -0.5f },
-				{ 0, 0, -1 },
-				{ 1, 1, 0 },
-				{ 1, 1 }
-			});
+				vertices.push_back({
+					{ -0.5f, -0.5f, -0.5f },
+					{ 0, 0, -1 },
+					{ 1, 1, 0 },
+					{ 1, 1 }
+				});
 
-			vertices.push_back({
-				{ -0.5f, 0.5f, -0.5f },
-				{ 0, 0, -1 },
-				{ 1, 1, 0 },
-				{ 1, 0 }
-			});
+				vertices.push_back({
+					{ -0.5f, 0.5f, -0.5f },
+					{ 0, 0, -1 },
+					{ 1, 1, 0 },
+					{ 1, 0 }
+				});
 
-			auto& indices = mesh_->indices();
-			indices.insert(indices.end(), {
-				0, 1, 2,
-				2, 3, 0
-			});
+				auto& indices = sQuadMesh->getIndices();
+				indices.insert(indices.end(), {
+					0, 1, 2,
+					2, 3, 0
+				});
 
-			mesh_->update();
-			set_mesh(mesh_.get());
+				sQuadMesh->updateMeshData();
+			}
+
+			setMesh(sQuadMesh.get());
 		}
 	};
+
+	std::unique_ptr<TexturedMesh> SpriteRendererComponent::sQuadMesh;
 }

@@ -4,7 +4,7 @@
 
 namespace spruce {
 
-	void OpenGL_Shader::compile_from_source(std::string const& filename) {
+	void GLShader::compileFromSource(std::string const& filename) {
 		std::ifstream fstream { filename, std::ios::in };
 		panic_if(!fstream.is_open(), "Failed to open source source file: '" + filename + "'.\n");
 
@@ -12,19 +12,19 @@ namespace spruce {
 		GLchar const* source_cstr = source.c_str();
 		GLint source_len = source.length();
 
-		glShaderSource(id_, 1, &source_cstr, nullptr);
-		glCompileShader(id_);
+		glShaderSource(mGLId, 1, &source_cstr, nullptr);
+		glCompileShader(mGLId);
 
 		int compileResult;
-		glGetShaderiv(id_, GL_COMPILE_STATUS, &compileResult);
+		glGetShaderiv(mGLId, GL_COMPILE_STATUS, &compileResult);
 
 		if (compileResult != GL_TRUE) {
 			Log::err << "Failed to compile shader '" << filename << "'. Reason:\n";
 			int messageLen;
-			glGetShaderiv(id_, GL_INFO_LOG_LENGTH, &messageLen);
+			glGetShaderiv(mGLId, GL_INFO_LOG_LENGTH, &messageLen);
 			if (messageLen > 0) {
 				auto buffer = std::make_unique<char[]>(messageLen);
-				glGetShaderInfoLog(id_, messageLen, nullptr, buffer.get());
+				glGetShaderInfoLog(mGLId, messageLen, nullptr, buffer.get());
 				Log::msg << buffer.get() << "\n";
 			}
 		}

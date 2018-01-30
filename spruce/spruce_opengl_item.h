@@ -3,30 +3,26 @@
 #include "spruce_graphics.h"
 
 namespace spruce {
-	enum class OpenGL_Item_Type {
+	enum class GLItemType {
 		Texture,
 		Buffer,
-		Frame_Buffer,
+		Framebuffer,
 		Shader,
-		Program,
-		Vertex_Array
+		ShaderProgram,
+		VertexArray
 	};
 
-	class OpenGL_Item {
+	class GLItem {
 	protected:
-		OpenGL_Item_Type type_;
-		GLuint id_;
+		GLItemType mType;
+		GLuint mGLId;
 
 	public:
-		OpenGL_Item(OpenGL_Item_Type type) 
-			: type_(type), id_(0) {
+		GLItem(GLItemType type, GLuint glId = 0)
+			: mType(type), mGLId(glId) {
 		}
 
-		OpenGL_Item(OpenGL_Item_Type type, GLuint id) 
-			: type_(type), id_(id) {
-		}
-
-		inline OpenGL_Item_Type type() const { return type_; }
-		inline GLuint id() const { return id_; }
+		inline GLItemType getType() const { return mType; }
+		inline GLuint getGLId() const { return mGLId; }
 	};
 }

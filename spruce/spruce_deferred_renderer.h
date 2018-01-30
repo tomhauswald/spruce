@@ -6,40 +6,39 @@
 #include "spruce_opengl_frame_buffer.h"
 #include "spruce_opengl_program.h"
 #include "spruce_mesh_renderer_component.h"
+#include "spruce_opengl_window.h"
 
 namespace spruce {	
-	class Deferred_Renderer;
 
-	class Deferred_Geometry_Pass : public Render_Pass {
+	class DeferredRenderer;
+
+	class GeometryRenderPass : public RenderPass {
 	public:
-		Deferred_Geometry_Pass(Deferred_Renderer* renderer);
-		void render(Scene* scene) override;
+		GeometryRenderPass(DeferredRenderer& renderer);
+		void renderScene(Scene& scene) override;
 	};
 
-	class Deferred_Lighting_Pass : public Render_Pass {
+	class LightingRenderPass : public RenderPass {
 	private:
-		std::unique_ptr<FSQ_Mesh> fsq_mesh_;
-		std::unique_ptr<OpenGL_Program> fsq_program_;
+		std::unique_ptr<FSQMesh> mFSQMesh;
+		std::unique_ptr<GLShaderProgram> mFSQProgram;
 
 	public:
-		Deferred_Lighting_Pass(Deferred_Renderer* renderer);
-		void render(Scene* scene) override;
+		LightingRenderPass(DeferredRenderer& renderer);
+		void renderScene(Scene& scene) override;
 	};
 
-	class Deferred_Renderer : public Renderer {
-	friend class Deferred_Geometry_Pass;
-	friend class Deferred_Lighting_Pass;
+	class DeferredRenderer : public Renderer {
+	friend class GeometryRenderPass;
+	friend class LightingRenderPass;
 
 	private:
-		std::unique_ptr<OpenGL_Texture> position_texture_;
-		std::unique_ptr<OpenGL_Texture> normal_texture_;
-		std::unique_ptr<OpenGL_Texture> albedo_texture_;
-		std::unique_ptr<OpenGL_Frame_Buffer> geometry_fbo_;
+		std::unique_ptr<GLTexture> mPositionTexture;
+		std::unique_ptr<GLTexture> mNormalTexture;
+		std::unique_ptr<GLTexture> mAlbedoTexture;
+		std::unique_ptr<GLFramebuffer> mGeometryFBO;
 		
 	public:
-		Deferred_Renderer(Game* game)
-			: Renderer(game) { }
-
-		bool initialize() override;
+		bool initialize(GLWindow const& window);
 	};
 }

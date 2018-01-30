@@ -4,5 +4,5 @@
 #include "spruce_opengl_texture.h"
 
 namespace spruce {
-	using OpenGL_Textures = Resource_Manager<OpenGL_Texture>;
+	using GLTextureManager = ResourceManager<GLTexture>;
 }

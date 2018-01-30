@@ -4,7 +4,7 @@
 
 namespace spruce {
 
-	struct OpenGL_Window_Settings {
+	struct GLWindowSettings {
 		std::string caption;
 		uint16_t width;
 		uint16_t height;
@@ -15,39 +15,40 @@ namespace spruce {
 		bool fullscreen;
 	};
 
-	struct OpenGL_Context_Settings {
+	struct GLContextSettings {
 		uint8_t majorVersion;
 		uint8_t minorVersion;
 		bool coreProfileEnabled;
 		bool forwardCompatibilityEnabled;
 	};
 
-	class OpenGL_Window {
+	class GLWindow {
 	private:
-		GLFWwindow* window_;
-		OpenGL_Window_Settings window_settings_;
-		OpenGL_Context_Settings context_settings_;
+		GLFWwindow* mGLFWWindow;
+		GLWindowSettings mWindowSettings;
+		GLContextSettings mContextSettings;
 		
-		static std::string glfwErrorMsg_;
+		static std::string sGLFWErrorMsg;
 
-		static inline void glfw_error_callback(int code, char const* desc) {
-			glfwErrorMsg_ = std::string { desc };
+		static inline void glfwErrorCallback(int code, char const* desc) {
+			sGLFWErrorMsg = std::string { desc };
 		}
 
 	public:
-		OpenGL_Window(OpenGL_Window_Settings const& window_settings, OpenGL_Context_Settings const& context_settings);
-		~OpenGL_Window();
+		GLWindow(GLWindowSettings windowSettings, GLContextSettings contextSettings);
 
-		inline OpenGL_Window_Settings const& window_settings() const { return window_settings_; }
-		inline OpenGL_Context_Settings const& context_settings() const { return context_settings_; }
+		inline GLWindowSettings const& getWindowSettings() const { return mWindowSettings; }
+		inline GLContextSettings const& getContextSettings() const { return mContextSettings; }
 		
-		inline uint16_t width() const { return window_settings_.width; }
-		inline uint16_t height() const { return window_settings_.height; }
-		inline float aspect_ratio() const { return width() / (float)height(); }
+		inline uint16_t getWidth() const { return mWindowSettings.width; }
+		inline uint16_t getHeight() const { return mWindowSettings.height; }
+		inline float getAspectRatio() const { return getWidth() / (float)getHeight(); }
 
-		bool should_close() const;
-		void swap_buffers();
-		void poll_events();
-		void clear_buffer(fvec3 const& color);
+		bool isCloseRequested() const;
+		void swapBuffers();
+		void pollEvents();
+		void clear(fvec3 const& color);
+
+		~GLWindow();
 	};
 }

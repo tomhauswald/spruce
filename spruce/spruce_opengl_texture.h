@@ -5,26 +5,26 @@
 
 namespace spruce {
 
-	enum class OpenGL_Sampling_Mode {
+	enum class GLSamplingMode {
 		Point,
 		Lerp
 	};
 
-	class OpenGL_Texture : public OpenGL_Item {
+	class GLTexture : public GLItem {
 	public:
 		// Generates a new OpenGL texture using default settings.
-		OpenGL_Texture();
+		GLTexture();
 
-		void upload_bitmap_data(Bitmap const& bmp);
-		void set_downsampling_mode(OpenGL_Sampling_Mode localMode, bool useMipmaps, OpenGL_Sampling_Mode mipmapMode);
-		void set_upsampling_mode(OpenGL_Sampling_Mode localMode);
-		void set_max_anisotropy(float max);
+		void uploadBitmap(Bitmap const& bmp);
+		void setDownsamplingMode(GLSamplingMode localMode, bool useMipmaps, GLSamplingMode mipmapMode);
+		void setUpsamplingMode(GLSamplingMode localMode);
+		void setMaxAnisotropy(float max);
 
 		inline void bind(uint32_t textureUnitId) { 
 			glActiveTexture(GL_TEXTURE0 + textureUnitId); 
-			glBindTexture(GL_TEXTURE_2D, id_);
+			glBindTexture(GL_TEXTURE_2D, mGLId);
 		}
 
-		~OpenGL_Texture();
+		~GLTexture();
 	};
 }

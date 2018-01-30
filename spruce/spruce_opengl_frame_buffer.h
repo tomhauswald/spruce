@@ -4,18 +4,21 @@
 #include "spruce_opengl_texture.h"
 
 namespace spruce {
-	class OpenGL_Frame_Buffer : public OpenGL_Item {
+
+	class GLFramebuffer : public GLItem {
 	private:
-		std::vector<GLenum> attachments_;
+		std::vector<GLenum> mAttachments;
 
 	public:
-		OpenGL_Frame_Buffer()
-			: OpenGL_Item(OpenGL_Item_Type::Frame_Buffer, glGenFramebuffer()) {
+		GLFramebuffer()
+			: GLItem(GLItemType::Framebuffer, glGenFramebuffer()) {
 		}
 
-		inline void bind() { glBindFramebuffer(GL_FRAMEBUFFER, id_); }
+		inline void bind() { 
+			glBindFramebuffer(GL_FRAMEBUFFER, mGLId); 
+		}
 
 		void clear(fvec3 const& color);
-		void attach_texture(GLenum attachment, OpenGL_Texture const& texture);
+		void addTextureAttachment(GLenum attachment, GLTexture const& texture);
 	};
 }

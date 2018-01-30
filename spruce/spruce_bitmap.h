@@ -3,13 +3,14 @@
 #include "spruce_graphics.h"
 
 namespace spruce {
+
 	class Bitmap {
 	private:
-		uint16_t width_;
-		uint16_t height_;
-		uint8_t* data_;
+		uint16_t mWidth;
+		uint16_t mHeight;
+		uint8_t* mPixelData;
 
-		void release_current_data();
+		void releasePixelData();
 
 	public:
 		// Creates a new bitmap with no data.
@@ -22,15 +23,15 @@ namespace spruce {
 		Bitmap(std::string const& filename);
 
 		// Fills an existing bitmap with data from an input file.
-		bool load_from_file(std::string const& filename);
+		bool loadFromFile(std::string const& filename);
 
-		inline uint16_t width() const { return width_; }
-		inline uint16_t height() const { return height_; }
-		inline uint8_t const* data() const { return data_; }
-		inline uint8_t* data() { return data_; }
+		inline uint16_t getWidth() const { return mWidth; }
+		inline uint16_t getHeight() const { return mHeight; }
+		inline uint8_t const* getPixelData() const { return mPixelData; }
+		inline uint8_t* getPixelData() { return mPixelData; }
 
 		~Bitmap() {
-			release_current_data();
+			releasePixelData();
 		}
 	};
 }
