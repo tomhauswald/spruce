@@ -97,7 +97,7 @@
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="DeferredRenderer.h" />
-    <ClInclude Include="FreeRoamCameraComponent.h" />
+    <ClInclude Include="RoamingComponent.h" />
     <ClInclude Include="GLShaderProgramManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Renderer.h" />
@@ -134,7 +134,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DeferredRenderer.cpp" />
-    <ClCompile Include="FreeRoamCameraComponent.cpp" />
+    <ClCompile Include="RoamingComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Input.cpp" />

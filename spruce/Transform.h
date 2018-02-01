@@ -78,19 +78,13 @@ namespace spruce {
 			return mModelMatrix; 
 		}
 
-		inline vec3 getRight() {
-			auto col = glm::column(getModelMatrix(), 0);
-			return vec3(col.x, col.y, col.z);
-		}
-
-		inline vec3 getUp() {
-			auto col = glm::column(getModelMatrix(), 1);
-			return vec3(col.x, col.y, col.z);
-		}
-
 		inline vec3 getForward() {
 			auto col = glm::column(getModelMatrix(), 2);
 			return vec3(col.x, col.y, col.z);
+		}
+
+		inline vec3 getRight() {
+			return glm::cross({ 0,1,0 }, getForward());
 		}
 	};
 }

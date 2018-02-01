@@ -3,7 +3,7 @@
 #include <GLTextureManager.h>
 #include <TexturedMeshRendererComponent.h>
 #include <DeferredRenderer.h>
-#include <FreeRoamCameraComponent.h>
+#include <RoamingComponent.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -69,6 +69,7 @@ private:
 	std::unique_ptr<TexturedMesh> mMesh;
 
 	std::unique_ptr<TexturedMesh> createCubeMesh() {
+		
 		auto mesh = std::make_unique<TexturedMesh>();
 		mesh->initialize();
 		auto& vertices = mesh->getVertices();
@@ -253,7 +254,39 @@ private:
 		mesh->updateMeshData();
 		return mesh;
 	}
+	
+	std::unique_ptr<TexturedMesh> createGridMesh() {
+		
+		auto mesh = std::make_unique<TexturedMesh>();
+		mesh->initialize();
+		auto& vertices = mesh->getVertices();
+		auto& indices = mesh->getIndices();
 
+		uint16_t nX = 10, nZ = 10;
+		for (uint16_t z = 0; z < nZ; ++z) {
+			for (uint16_t x = 0; x < nX; ++x) {
+				vertices.push_back({
+					{ x, 0, z },
+					{ 0, 1, 0 },
+					{ 1, 1, 1 },
+					{ x/(float)nX, z/(float)nZ }
+				});
+			}
+		}
+
+		auto nQuads = (nX - 1) * (nZ - 1);
+		for (int i = 0; i < 10; ++i) {
+			indices.push_back(i + nX);
+			indices.push_back(i);
+			indices.push_back(i + 1);
+			indices.push_back(i + 1);
+			indices.push_back(i + nX + 1);
+			indices.push_back(i + nX);
+		}
+
+		mesh->updateMeshData();
+		return mesh;
+	}
 public:
 	TestScene(Game& game) :
 		Scene(game) {
@@ -279,11 +312,12 @@ public:
 
 		// Camera object.
 		auto& cam = getRoot().addChild(std::make_unique<Entity>("camera"));
-		cam.addComponent(std::make_unique<FreeRoamCameraComponent>(16.0f / 9.0f, 45.0f, 3.0f));
-		cam.getTransform().setPosition({ 0, 0, -3 });
+		cam.addComponent(std::make_unique<CameraComponent>(16.0f / 9.0f, 45.0f));
+		cam.addComponent(std::make_unique<RoamingComponent>(10.0f, 90.0f));
+		cam.getTransform().setPosition({ 0, 5, -5 });
 
 		// Construct test mesh.
-		mMesh = createCubeMesh();
+		mMesh = createGridMesh();
 
 		// Load grass texture.
 		mGrassTexture = &GLTextureManager::add("grass", std::make_unique<GLTexture>());
@@ -297,7 +331,6 @@ public:
 
 		// Create cube.
 		auto& obj = getRoot().addChild(std::make_unique<Entity>());
-		obj.addComponent(std::make_unique<RotatorComponent>(glm::pi<float>() / 2));
 
 		auto& meshRendererComponent = obj.addComponentOfType<TxrMeshRendererComponent>();
 		meshRendererComponent.setShaderProgram(*GLShaderProgramManager::get("textured"));
@@ -305,7 +338,7 @@ public:
 		meshRendererComponent.setTextureUniformName("uTexture");
 		meshRendererComponent.setMVPUniformName("uMVP");
 		meshRendererComponent.setTexture(*mGrassTexture);
-		meshRendererComponent.setCamera(cam.getComponentOfType<FreeRoamCameraComponent>());
+		meshRendererComponent.setCamera(cam.getComponentOfType<CameraComponent>());
 
 		return Scene::initialize();
 	}

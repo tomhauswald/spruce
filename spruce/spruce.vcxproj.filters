@@ -150,7 +150,7 @@
     <ClInclude Include="CameraComponent.h">
       <Filter>Header Files\core\components</Filter>
     </ClInclude>
-    <ClInclude Include="FreeRoamCameraComponent.h">
+    <ClInclude Include="RoamingComponent.h">
       <Filter>Header Files\core\components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -197,7 +197,7 @@
     <ClCompile Include="CameraComponent.cpp">
       <Filter>Source Files\core\components</Filter>
     </ClCompile>
-    <ClCompile Include="FreeRoamCameraComponent.cpp">
+    <ClCompile Include="RoamingComponent.cpp">
       <Filter>Source Files\core\components</Filter>
     </ClCompile>
   </ItemGroup>

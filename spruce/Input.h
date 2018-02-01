@@ -1,14 +1,16 @@
 #pragma once
 
-#include <GLFW\glfw3.h>
+#include "Graphics.h"
 #include <bitset>
 
 namespace spruce {
 
 	class Input {
 	private:
-		static std::bitset <GLFW_KEY_LAST> sCurrentKeysDown;
-		static std::bitset <GLFW_KEY_LAST> sPrevKeysDown;
+		static std::bitset<GLFW_KEY_LAST> sCurrentKeysDown;
+		static std::bitset<GLFW_KEY_LAST> sPrevKeysDown;
+		static glm::dvec2 sCurrentCursorPos;
+		static glm::dvec2 sPrevCursorPos;
 
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 			if (action == GLFW_PRESS) {
@@ -19,9 +21,16 @@ namespace spruce {
 			}
 		}
 
+		static void cursorCallback(GLFWwindow* window, double x, double y) {
+			sCurrentCursorPos.x = x;
+			sCurrentCursorPos.y = y;
+		}
+
 	public:
 		static void initialize(GLFWwindow* window) {
 			glfwSetKeyCallback(window, &keyCallback);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetCursorPosCallback(window, &cursorCallback);
 		}
 
 		static bool isKeyDown(int key) {
@@ -36,10 +45,19 @@ namespace spruce {
 			return !sCurrentKeysDown[key] && sPrevKeysDown[key];
 		}
 
+		static glm::dvec2 const& getCursorPosition() {
+			return sCurrentCursorPos;
+		}
+
+		static glm::dvec2 getCursorDelta() {
+			return sCurrentCursorPos - sPrevCursorPos;
+		}
+
 		static void update() {
 			for (int i = 0; i < GLFW_KEY_LAST; ++i) {
 				sPrevKeysDown[i] = sCurrentKeysDown[i];
 			}
+			sPrevCursorPos = sCurrentCursorPos;
 		}
 	};
 }
