@@ -1,23 +1,9 @@
-﻿#include <spruce_log.h>
-#include <spruce_opengl_window.h>
-#include <spruce_opengl_texture.h>
-#include <spruce_opengl_vertex_array.h>
-#include <spruce_opengl_array_buffer.h>
-#include <spruce_opengl_element_buffer.h>
-#include <spruce_opengl_shader.h>
-#include <spruce_opengl_program.h>
-#include <spruce_mesh.h>
-#include <spruce_bitmap.h>
-#include <spruce_opengl_frame_buffer.h>
-#include <spruce_game.h>
-#include <spruce_scene.h>
-#include <spruce_deferred_renderer.h>
-#include <spruce_transform.h>
-#include <spruce_textured_mesh_renderer_component.h>
-#include <spruce_sprite_renderer_component.h>
-#include <spruce_opengl_textures.h>
-#include <spruce_opengl_program_manager.h>
-
+﻿#include <Game.h>
+#include <GLShaderProgramManager.h>
+#include <GLTextureManager.h>
+#include <TexturedMeshRendererComponent.h>
+#include <DeferredRenderer.h>
+#include <FreeRoamCameraComponent.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -53,10 +39,220 @@ public:
 	}
 };
 
+class FPSCounterComponent : public Component {
+private:
+	uint32_t mFrames;
+	float mTime;
+	float mPeriod;
+
+public:
+	FPSCounterComponent(float period = 1.0f) :
+		mFrames(0),
+		mTime(0.0f),
+		mPeriod(period) {
+	}
+
+	void update(float dt) override {
+		mFrames++;
+		if ((mTime += dt) >= mPeriod) {
+			auto fps = mFrames / mTime;
+			Log::msg.printf("%0.2f FPS (%5.2f ms.)\n", fps, 1000.0f / fps);
+			mFrames = 0;
+			mTime = 0.0f;
+		}
+	}
+};
+
 class TestScene : public Scene {
 private:
 	GLTexture* mGrassTexture;
 	std::unique_ptr<TexturedMesh> mMesh;
+
+	std::unique_ptr<TexturedMesh> createCubeMesh() {
+		auto mesh = std::make_unique<TexturedMesh>();
+		mesh->initialize();
+		auto& vertices = mesh->getVertices();
+
+		// Front
+		vertices.push_back({
+			{ -0.5f, 0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, 0.5f, -0.5f },
+			{ 0, 0, -1 },
+			{ 1, 1, 0 },
+			{ 1, 0 }
+		});
+
+		// Back
+		vertices.push_back({
+			{ 0.5f, 0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, 0.5f, 0.5f },
+			{ 0, 0, 1 },
+			{ 0, 0, 1 },
+			{ 1, 0 }
+		});
+
+		// Left
+		vertices.push_back({
+			{ -0.5f, 0.5f, 0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, 0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, -0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ -0.5f, 0.5f, -0.5f },
+			{ -1, 0, 0 },
+			{ 0, 1, 1 },
+			{ 1, 0 }
+		});
+
+		// Right
+		vertices.push_back({
+			{ 0.5f, 0.5f, -0.5f },
+			{ 1, 0, 0 },
+			{ 1, 0, 0},
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, -0.5f },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, 0.5f },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, 0.5f, 0.5f },
+			{ 1, 0, 0 },
+			{ 1, 0, 0 },
+			{ 1, 0 }
+		});
+
+		// Top
+		vertices.push_back({
+			{ -0.5f, 0.5f, 0.5f },
+			{ 0, 1, 0 },
+			{ 0, 1, 0 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ -0.5f, 0.5f, -0.5f },
+			{ 0, 1, 0 },
+			{ 0, 1, 0 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, 0.5f, -0.5f },
+			{ 0, 1, 0 },
+			{ 0, 1, 0 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, 0.5f, 0.5f },
+			{ 0, 1, 0 },
+			{ 0, 1, 0 },
+			{ 1, 0 }
+		});
+
+		// Bottom
+		vertices.push_back({
+			{ -0.5f, -0.5f, -0.5f },
+			{ 0, -1, 0 },
+			{ 1, 0, 1 },
+			{ 0, 0 }
+		});
+		vertices.push_back({
+			{ -0.5f, -0.5f, 0.5f },
+			{ 0, -1, 0 },
+			{ 1, 0, 1 },
+			{ 0, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, 0.5f },
+			{ 0, -1, 0 },
+			{ 1, 0, 1 },
+			{ 1, 1 }
+		});
+		vertices.push_back({
+			{ 0.5f, -0.5f, -0.5f },
+			{ 0, -1, 0 },
+			{ 1, 0, 1 },
+			{ 1, 0 }
+		});
+
+		auto& indices = mesh->getIndices();
+		indices.insert(indices.end(), {
+			0, 1, 2,
+			2, 3, 0,
+
+			4, 5, 6,
+			6, 7, 4,
+			
+			8, 9, 10,
+			10, 11, 8,
+
+			12, 13, 14,
+			14, 15, 12,
+
+			16, 17, 18,
+			18, 19, 16,
+
+			20, 21, 22,
+			22, 23, 20
+		});
+
+		mesh->updateMeshData();
+		return mesh;
+	}
 
 public:
 	TestScene(Game& game) :
@@ -81,152 +277,35 @@ public:
 			GLShaderProgramManager::get("textured")->addUniformVar("uTexture");
 		}
 
+		// Camera object.
+		auto& cam = getRoot().addChild(std::make_unique<Entity>("camera"));
+		cam.addComponent(std::make_unique<FreeRoamCameraComponent>(16.0f / 9.0f, 45.0f, 3.0f));
+		cam.getTransform().setPosition({ 0, 0, -3 });
+
 		// Construct test mesh.
-		mMesh = std::make_unique<TexturedMesh>();
-		mMesh->initialize();
-		auto& vertices = mMesh->getVertices();
+		mMesh = createCubeMesh();
 
-		// Back
-		vertices.push_back({
-			{ -0.5f, 0.5f, 0.5f },
-			{ 0, 0, 1 },
-			{ 0, 0, 1 },
-			{ 0, 0 }
-		});
-		vertices.push_back({
-			{ -0.5f, -0.5f, 0.5f },
-			{ 0, 0, 1 },
-			{ 0, 0, 1 },
-			{ 0, 1 }
-		});
-		vertices.push_back({
-			{ 0.5f, -0.5f, 0.5f },
-			{ 0, 0, 1 },
-			{ 0, 0, 1 },
-			{ 1, 1 }
-		});
-		vertices.push_back({
-			{ 0.5f, 0.5f, 0.5f },
-			{ 0, 0, 1 },
-			{ 0, 0, 1 },
-			{ 1, 0 }
-		});
-
-		// Right
-		vertices.push_back({
-			{ 0.5f, 0.5f, 0.5f },
-			{ 1, 0, 0 },
-			{ 1, 0, 0 },
-			{ 0, 0 }
-		});
-		vertices.push_back({
-			{ 0.5f, -0.5f, 0.5f },
-			{ 1, 0, 0 },
-			{ 1, 0, 0 },
-			{ 0, 1 }
-		});
-		vertices.push_back({
-			{ 0.5f, -0.5f, -0.5f },
-			{ 1, 0, 0 },
-			{ 1, 0, 0 },
-			{ 1, 1 }
-		});
-		vertices.push_back({
-			{ 0.5f, 0.5f, -0.5f },
-			{ 1, 0, 0 },
-			{ 1, 0, 0 },
-			{ 1, 0 }
-		});
-
-		// Left
-		vertices.push_back({
-			{ -0.5f, 0.5f, -0.5f },
-			{ -1, 0, 0 },
-			{ 0, 1, 1 },
-			{ 0, 0 }
-		});
-		vertices.push_back({
-			{ -0.5f, -0.5f, -0.5f },
-			{ -1, 0, 0 },
-			{ 0, 1, 1 },
-			{ 0, 1 }
-		});
-		vertices.push_back({
-			{ -0.5f, -0.5f, 0.5f },
-			{ -1, 0, 0 },
-			{ 0, 1, 1 },
-			{ 1, 1 }
-		});
-		vertices.push_back({
-			{ -0.5f, 0.5f, 0.5f },
-			{ -1, 0, 0 },
-			{ 0, 1, 1 },
-			{ 1, 0 }
-		});
-		
-		// Front
-		vertices.push_back({
-			{ 0.5f, 0.5f, -0.5f },
-			{ 0, 0, -1 },
-			{ 1, 1, 0 },
-			{ 0, 0 }
-		});
-		vertices.push_back({
-			{ 0.5f, -0.5f, -0.5f },
-			{ 0, 0, -1 },
-			{ 1, 1, 0 },
-			{ 0, 1 }
-		});
-		vertices.push_back({
-			{ -0.5f, -0.5f, -0.5f },
-			{ 0, 0, -1 },
-			{ 1, 1, 0 },
-			{ 1, 1 }
-		});
-		vertices.push_back({
-			{ -0.5f, 0.5f, -0.5f },
-			{ 0, 0, -1 },
-			{ 1, 1, 0 },
-			{ 1, 0 }
-		});
-
-		auto& indices = mMesh->getIndices();
-		indices.insert(indices.end(), {
-			0, 1, 2,
-			2, 3, 0,
-			
-			4, 5, 6,
-			6, 7, 4,
-			
-			8, 9, 10,
-			10, 11, 8,
-	
-			12, 13, 14,
-			14, 15, 12
-		});
-		mMesh->updateMeshData();
-
+		// Load grass texture.
 		mGrassTexture = &GLTextureManager::add("grass", std::make_unique<GLTexture>());
 		mGrassTexture->setUpsamplingMode(GLSamplingMode::Point);
 		mGrassTexture->setDownsamplingMode(GLSamplingMode::Point, false, GLSamplingMode::Point);
 		mGrassTexture->setMaxAnisotropy(1.0f);
 		mGrassTexture->uploadBitmap(Bitmap("grass.png"));
 
-		auto fov = 45.0f;
-		auto view = glm::lookAt(vec3(0, 0, 10), { 0, 0, 0 }, { 0, 1, 0 });
-		auto projection = glm::perspective(glm::radians(fov), 16.0f / 9.0f, 0.1f, 100.0f);
+		// Create FPS counter.
+		getRoot().addComponent(std::make_unique<FPSCounterComponent>(5.0f));
 
-		// Create test object.
+		// Create cube.
 		auto& obj = getRoot().addChild(std::make_unique<Entity>());
 		obj.addComponent(std::make_unique<RotatorComponent>(glm::pi<float>() / 2));
-		
+
 		auto& meshRendererComponent = obj.addComponentOfType<TxrMeshRendererComponent>();
 		meshRendererComponent.setShaderProgram(*GLShaderProgramManager::get("textured"));
 		meshRendererComponent.setMesh(mMesh.get());
 		meshRendererComponent.setTextureUniformName("uTexture");
 		meshRendererComponent.setMVPUniformName("uMVP");
 		meshRendererComponent.setTexture(*mGrassTexture);
-		meshRendererComponent.setViewProjMat(projection * view);
+		meshRendererComponent.setCamera(cam.getComponentOfType<FreeRoamCameraComponent>());
 
 		return Scene::initialize();
 	}
@@ -238,8 +317,8 @@ public:
 
 		GLWindowSettings ws;
 		ws.caption = "Spruce Engine Test Application";
-		ws.width = 1280;
-		ws.height = 720;
+		ws.width = 1440;
+		ws.height = 900;
 		ws.vsync = false;
 		ws.doubleBuffered = true;
 		ws.fullscreen = false;
@@ -263,20 +342,18 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 		glFrontFace(GL_CCW);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 	}
 };
 
 int main() {
-	Log::msg.register_callback([](std::string const& message) { std::cout << message; });
-	Log::err.register_callback([](std::string const& message) { std::cerr << message; });
+	Log::msg.registerCallback([](std::string const& message) { std::cout << message; });
+	Log::err.registerCallback([](std::string const& message) { std::cerr << message; });
 
 #ifdef _WIN32
 	// Enable message box debugging on Windows platforms.
-	Log::err.register_callback([](std::string const& message) { MessageBoxA(nullptr, message.c_str(), "Error", 0); });
+	Log::err.registerCallback([](std::string const& message) { MessageBoxA(nullptr, message.c_str(), "Error", 0); });
 #endif
 
 	TestGame().run("main");

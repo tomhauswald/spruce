@@ -19,27 +19,6 @@
     <Filter Include="Source Files\graphics">
       <UniqueIdentifier>{b241fc66-986b-4805-a9fc-f8933a92e6ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\graphics\opengl">
-      <UniqueIdentifier>{66f16a8c-2190-4433-a362-6afc0efd07ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\misc">
-      <UniqueIdentifier>{f6750cd8-ddb0-46d0-a7c0-7c4336d2c2e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\misc">
-      <UniqueIdentifier>{c31a5a43-42c6-433c-b28c-95e9badde4b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine">
-      <UniqueIdentifier>{44bcfd6d-6266-48a0-b9cc-9dc0bab3f997}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine">
-      <UniqueIdentifier>{d278b8bd-9894-43f6-81b9-5a485f5bdda6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine\components">
-      <UniqueIdentifier>{6df57918-38b6-42fe-a593-81600135a2d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine\components">
-      <UniqueIdentifier>{004f8166-0d95-4330-bf51-37034e944fae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\graphics\2d">
       <UniqueIdentifier>{f70377f5-696f-4f2f-82da-93f50d30d0ae}</UniqueIdentifier>
     </Filter>
@@ -49,135 +28,177 @@
     <Filter Include="Header Files\graphics\3d\OpenGL">
       <UniqueIdentifier>{b7e2e6e2-dc43-42d6-9d2e-521abd12ab7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{44bcfd6d-6266-48a0-b9cc-9dc0bab3f997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core\components">
+      <UniqueIdentifier>{6df57918-38b6-42fe-a593-81600135a2d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\input">
+      <UniqueIdentifier>{f6750cd8-ddb0-46d0-a7c0-7c4336d2c2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{d278b8bd-9894-43f6-81b9-5a485f5bdda6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core\components">
+      <UniqueIdentifier>{004f8166-0d95-4330-bf51-37034e944fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\3d">
+      <UniqueIdentifier>{d0b7a53c-1d11-4501-8d22-6399baf168af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\3d\opengl">
+      <UniqueIdentifier>{66f16a8c-2190-4433-a362-6afc0efd07ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\input">
+      <UniqueIdentifier>{108af3ca-823d-4025-9207-5a83bf77249f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="spruce_log.h">
-      <Filter>Header Files\misc</Filter>
+    <ClInclude Include="Component.h">
+      <Filter>Header Files\core\components</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_common.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MeshRendererComponent.h">
+      <Filter>Header Files\core\components</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_graphics.h">
-      <Filter>Header Files\graphics</Filter>
+    <ClInclude Include="TexturedMeshRendererComponent.h">
+      <Filter>Header Files\core\components</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_mesh.h">
-      <Filter>Header Files\graphics</Filter>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_bitmap.h">
-      <Filter>Header Files\graphics</Filter>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_game.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_scene.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_deferred_renderer.h">
-      <Filter>Header Files\graphics</Filter>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_renderer.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_mesh_renderer_component.h">
-      <Filter>Header Files\engine\components</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_transform.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_textured_mesh_renderer_component.h">
-      <Filter>Header Files\engine\components</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_vertex.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_sprite_renderer_component.h">
+    <ClInclude Include="SpriteRendererComponent.h">
       <Filter>Header Files\graphics\2d</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_resource_manager.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="GLArrayBuffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_textures.h">
+    <ClInclude Include="GLBuffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLElementBuffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLFramebuffer.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLItem.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLShaderProgram.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLShaderProgramManager.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLShader.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLTexture.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLUniformVar.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="GLVertexArray.h">
+      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Bitmap.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_component.h">
-      <Filter>Header Files\engine\components</Filter>
+    <ClInclude Include="DeferredRenderer.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_entity.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="Graphics.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_array_buffer.h">
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="GLTextureManager.h">
       <Filter>Header Files\graphics\3d\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_buffer.h">
+    <ClInclude Include="GLWindow.h">
       <Filter>Header Files\graphics\3d\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_element_buffer.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Header Files\core\components</Filter>
     </ClInclude>
-    <ClInclude Include="spruce_opengl_frame_buffer.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_item.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_program.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_shader.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_texture.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_uniform.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_vertex_array.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_window.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="spruce_opengl_program_manager.h">
-      <Filter>Header Files\graphics\3d\OpenGL</Filter>
+    <ClInclude Include="FreeRoamCameraComponent.h">
+      <Filter>Header Files\core\components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="spruce_opengl_window.cpp">
-      <Filter>Source Files\graphics\opengl</Filter>
+    <ClCompile Include="TexturedMeshRendererComponent.cpp">
+      <Filter>Source Files\core\components</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_log.cpp">
-      <Filter>Source Files\misc</Filter>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_common.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_bitmap.cpp">
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFramebuffer.cpp">
+      <Filter>Source Files\graphics\3d\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="GLShader.cpp">
+      <Filter>Source Files\graphics\3d\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="GLTexture.cpp">
+      <Filter>Source Files\graphics\3d\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="GLWindow.cpp">
+      <Filter>Source Files\graphics\3d\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_opengl_texture.cpp">
-      <Filter>Source Files\graphics\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="spruce_opengl_frame_buffer.cpp">
-      <Filter>Source Files\graphics\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="spruce_opengl_shader.cpp">
-      <Filter>Source Files\graphics\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="spruce_game.cpp">
-      <Filter>Source Files\engine</Filter>
-    </ClCompile>
-    <ClCompile Include="spruce_deferred_renderer.cpp">
+    <ClCompile Include="DeferredRenderer.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_transform.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="Log.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_textured_mesh_renderer_component.cc">
-      <Filter>Source Files\engine\components</Filter>
+    <ClCompile Include="Common.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="spruce_entity.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Source Files\core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeRoamCameraComponent.cpp">
+      <Filter>Source Files\core\components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
